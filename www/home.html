@@ -28,12 +28,12 @@
         $(document).ready(function()
         {
             document.addEventListener("deviceready",onReady,false);
+            $(".button-collapse").sideNav();
         
             function onReady()
             {                
                 navigator.splashscreen.hide();
                 init_client();
-                window.location.href="home.html";
                 document.addEventListener("backbutton",onBack,false);
             }
 
@@ -57,21 +57,75 @@
         });
     </script>
     <style>
-        #loadid
+        #header
         {
-            width: 70%;
-            margin: 30% auto;
-            vertical-align: middle;
+            background-color: #333;
         }
-        #loadid img{
-            vertical-align: middle;
-        }
+
+        
     </style>
 </head>
 
 <body>
-    <div id="loadid" class="adv_box">
-        <img src="images/load.gif" alt="Plz. wait loading...."/>
+    <div class="hm_cvr">
+        <div id="header">
+            <div class="navbar-fixed red">
+                <nav>
+                  <div class="nav-wrapper">
+                    <a href="#" data-activates="slide-out" class="button-collapse white-text nav-btn">
+                        <i class="mdi-navigation-menu"></i>
+                      </a>
+                    <h2 class="head-title">Smart City&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+                  </div>
+                </nav>
+          </div>
+        </div>
+        <ul id="slide-out" class="side-nav">
+            <li style="background-color:royalblue; font-size:20px">
+                <a href="#!"></a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li>
+                <a href="#!">Road</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li>
+                <a href="#!">Water</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li>
+                <a href="#!">Electricity</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li>
+                <a href="#!">Garbage</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li>
+                <a href="#!">Shivajinagar</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li>
+                <a href="#!">Shikrapur</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+        </ul>       
+        
+        
     </div>
 </body>
 </html>

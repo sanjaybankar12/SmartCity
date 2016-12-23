@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<!--
+  * Please see the included README.md file for license terms and conditions.
+  -->
+<head>
+    <title>Blank Cordova Mobile App Project Template (Lite)</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+
+    <!-- see http://webdesign.tutsplus.com/tutorials/htmlcss-tutorials/quick-tip-dont-forget-the-viewport-meta-tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <style>
+        /* following two viewport lines are equivalent to the meta viewport statement above, needed for Windows */
+        /* see http://www.quirksmode.org/blog/archives/2014/05/html5_dev_conf.html and http://dev.w3.org/csswg/css-device-adapt/ */
+        @-ms-viewport { width: 100vw ; zoom: 100% ; }  @viewport { width: 100vw ; zoom: 100% ; }
+        @-ms-viewport { user-zoom: fixed ; }           @viewport { user-zoom: fixed ; }
+    </style>
+    <link href="css/icons.css" rel="stylesheet">
+     <link rel="stylesheet" href="css/materilize.css"/> <!-- materilize css lib file -->
+    <link rel="stylesheet" href="css/icons.css"/>
+     <link rel="stylesheet" href="css/style.css"/> <!-- customecss lib file -->
+    <script src="cordova.js"></script>          <!-- phantom library, needed for Cordova api calls, added during build -->
+    <script src="js/app.js"></script>           <!-- recommended location of your JavaScript code relative to other JS files -->
+      <script src="js/jquery-2.1.1.js"></script>  
+      <script src="js/validation/jquery.validate.min.js"></script>  
+    <script src="js/materilize.js"></script>           <!-- materilize design lib file -->
+    <script src="xdk/init-dev.js"></script>     <!-- normalizes device and document ready events, see README for details -->
+    <script src="js/db.js"></script>       
+     
+    <script>
+        $(document).ready(function()
+        {
+            document.addEventListener("deviceready",onReady,false);
+            $(".button-collapse").sideNav();
+            $('select').material_select();
+
+            function onReady()
+            {
+                init_client();
+                    
+                document.addEventListener("backbutton",onBack,false);
+            }
+
+            function onBack()
+            {
+                navigator.notification.confirm("do you want to exit app?",onExit);
+            }
+            
+            function onExit(buttonIndex)
+            {
+                if(buttonIndex===1)
+                {
+                    navigator.app.exitApp();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            
+            $("#reg_form").validate(
+            {
+                errorClass: 'validation-error', // so that it doesn't conflict with the error class of alert 
+                rules:
+                {
+                    name:
+                    {
+                        required:true
+                    },
+                    email:
+                    {
+                        required:true,
+                        email:true
+                    },
+                    phone:
+                    {
+                        required:true,
+                        number:true,
+                        minlength:10,
+                        maxlength:10
+                    },
+                    pass:
+                    {
+                        required:true,
+                        ispass:true
+                    },
+                    cpass:
+                    {
+                        required:true,
+                        ispass:true,
+                        isMatch:true
+                    }
+                    
+                },                
+                highlight: function(element) {
+                    $(element).closest('.space').addClass('has-error');
+                },
+                unhighlight: function(element) {
+                    $(element).closest('.space').removeClass('has-error');
+                },
+                errorElement: 'span',
+                     errorPlacement: function(error, element) {
+                 var placement = $(element).data('error');
+                 if(placement){
+                     $(placement).append(error);
+                 }
+                 else{
+                     error.insertAfter(element);
+                 }
+                },
+                messages:
+                {
+                    name:
+                    {
+                        required:" * Name is required"
+                    },
+                    email:
+                    {
+                        required:"* Email is required",
+                        email:"* Email is invalid"
+                    },                    
+                    phone:
+                    {
+                        required:" * Phone is required",
+                        number:" * Phone must contains digits",
+                        minlength:" * Phone no. at least contains 10 digits",
+                        maxlength:" * Phone no. contains only 10 digits"
+                    },
+                    pass:
+                    {
+                        required:"* Password is required",
+                        ispass:"* Password must be 8 character long, contains at least 1 Capital Alphabet,1 Lower Alphabet,1 Special Character"
+                    },
+                    cpass:
+                    {
+                        required:"* Confirm Password is required",
+                        ispass:"* Confirm Password is invalid",
+                        isMatch:"* Password is not match found"
+                    }
+                }
+            });
+            
+            $.validator.addMethod("ispass",function(pass)
+            {
+                    var ispass=/^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$&])[0-9A-Za-z!@#$&]{8,}$/.test(pass); 
+                    return ispass;
+            },"* Password must be 8 character long, contains at least 1 Capital Alphabet,1 Lower Alphabet,1 Special Character");
+            
+             $.validator.addMethod("isMatch",function(cpass)
+            {
+                 var pass=$("#pass").val();
+                   return cpass==pass;
+            },"* Password is not match Found");
+            
+            $("#reg_form").on('submit',function()
+            {
+                var name=$("#name").val();
+                var isname=$("#name").valid();
+                var seltype=$("#seltype").val();
+                var phone=$("#phone").val();
+                var isphone=$("#phone").valid();
+                var email=$("#email").val();
+                var isemail=$("#email").valid();
+                var pass=$("#pass").val();
+                var ispass=$("#pass").valid();
+                var iscpass=$("#cpass").valid();
+                
+                if(isname && isemail && isphone && ispass && iscpass)
+                {
+                    if(navigator.connection.type!==Connection.NONE)
+                    {
+                        $("#regbtn").attr("disabled","true");
+                        $.ajax({
+                            type:"POST",                                                  url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/register.php",
+                            data:{"seltype":seltype,"name":name,"phone":phone,"email":email,"pass":pass},
+                            dataType:"json",
+                            success:function(response,testStatus,jqXHR)
+                            {
+                                $("#regbtn").removeAttr("disabled");
+                                
+                                 navigator.notification.alert("User Register Successfully...!!!",function(){
+                                    window.location.href="login.html";
+                                 },"Message","OK");
+                                return false;
+                            },
+                            error:function(response,testStatus,jqXHR)
+                            {
+                                $("#regbtn").removeAttr("disabled");
+                                return false;
+                            }
+                        });
+                        return false;
+                    }
+                    else
+                    {
+                        $("#regbtn").removeAttr("disabled");
+                        navigator.notification.alert("Internet must to be procceed",function(){ },"Warning","OK");
+                        return false;
+                    }
+                    return false;
+                }
+                return false;
+            });
+         
+            
+        });
+    </script>
+    <style>
+        .margin
+        {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+<div id="register_page" class="row no-margin">    
+   <div class="col s12  ">
+      <form id="reg_form" class="login-form">
+        <div class="row center">
+          <h4 class="white-text">Register to SmartCity</h4>
+        </div>
+        <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-social-person-outline prefix"></i>
+            <select id="seltype">
+                <option value="0">User</option>  
+                <option value="1">Admin</option>  
+                <option value="2">Super Admin</option>  
+            </select>
+            <label for="usertype" class="center-align">Type</label>
+          </div>
+        </div>
+        <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-social-person-outline prefix"></i>
+            <input id="name" name="name" type="text">
+            <label for="name" class="center-align">Name</label>
+          </div>
+        </div>
+         <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-social-person-outline prefix"></i>
+            <input id="email" name="email" type="text">
+            <label for="email" class="center-align">Email</label>
+          </div>
+        </div>
+        <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-communication-call prefix"></i>
+            <input id="phone" name="phone" type="text">
+            <label for="phone">phone</label>
+          </div>
+        </div>
+        <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-action-lock-outline prefix"></i>
+            <input id="pass" name="pass" type="password">
+            <label for="pass">Password</label>
+          </div>
+        </div>
+        <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-action-lock-outline prefix"></i>
+            <input id="cpass" name="cpass" type="password">
+            <label for="cpass">Confirm Password</label>
+          </div>
+        </div>
+        
+        <div  class="row">
+          <div style="text-align:center; margin-top:0;" class="input-field col s12 center">
+              <button id="regbtn" class="btn green" type="submit"  name="action">Register</button>
+              <p></p>
+              <p style="text-align:center; font-weight:bold;font-size:16px"><a  style="text-decoration:underline; color:#000;"  href="login.html">Already register...Click to Login</a></p>
+          </div>
+          
+        </div>
+      </form>
+    </div>
+	   
+    </div>
+ 
+</body>
+</html>
