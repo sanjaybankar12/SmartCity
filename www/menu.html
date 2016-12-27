@@ -29,17 +29,23 @@
         {
             document.addEventListener("deviceready",onReady,false);
             $(".button-collapse").sideNav();
-        
+            
             function onReady()
             {                
                 navigator.splashscreen.hide();
                 init_client();
+                
+                var cat=sessionStorage.getItem("cat");  
+                $("#det").text(cat+" Details");
+                $("#cmp").text(cat+" Complaints");
+                
                 document.addEventListener("backbutton",onBack,false);
             }
 
             function onBack()
             {
-                navigator.notification.confirm("Do you want to exit app?",onExit);
+                 window.location.href="home.html";
+                //navigator.notification.confirm("Do you want to exit app?",onExit);
             }
             
             function onExit(buttonIndex)
@@ -55,28 +61,9 @@
                 }
             }
             
-            $("#road").click(function()
+            $("#cmp").click(function()
             {
-                sessionStorage.setItem("cat","road");  
-                window.location.href="menu.html";
-            });
-            
-            $("#water").click(function()
-            {
-                sessionStorage.setItem("cat","water");  
-                window.location.href="menu.html";
-            });
-            
-            $("#electricity").click(function()
-            {
-                sessionStorage.setItem("cat","electricity");  
-                window.location.href="menu.html";
-            });
-            
-            $("#garbage").click(function()
-            {
-                sessionStorage.setItem("cat","garbage");  
-                window.location.href="menu.html";
+                window.location.href="complaints.html";
             });
             
         });
@@ -91,12 +78,45 @@
             font-weight: bold;
             font-size: 16px;
         }
+        .mid_cvr
+        {
+           margin: 10% auto;
+            width: 100%;
+            text-align: center;
+        }
+        .mid_cvr button
+        {
+            width: 80%;
+            height: 40px;
+        }
+        #det_cvr
+        {
+            width: 80%;
+            height: 180px;
+            margin: 5% auto;
+            background-color: #fff;
+            margin: auto;
+            background-image: url(images/news1.jpg);
+            background-size: 100% 100%;
+                
+        }
+        #cp_cvr
+        {
+            width: 80%;
+            margin: 5% auto;
+            height: 180px;
+            background-color: #fff;
+            margin: auto;
+            background-image: url(images/complaints.jpg);
+            background-size: 100% 100%;
+                
+        }
         
     </style>
 </head>
 
 <body>
-    <div class="hm_cvr">
+      <div class="hm_cvr">
         <div id="header">
             <div class="navbar-fixed red">
                 <nav>
@@ -142,66 +162,23 @@
             </li>
            
         </ul>       
+    </div>
+    <div class="mid_cvr">
+            
+        <div class="row">
+            <div id="det_cvr">
+            
+            </div>
+            <button id="det" type="button" class="btn green">Details</button>
+        </div>
+        <div class="row">
+            <div id="cp_cvr">
+            
+            </div>
+            <button type="button" id="cmp" class="btn red">Complaints</button>
+        </div>
         
+    </div>    
         
-    </div>
-        
-<div class="content ntop-margin b10-margin">
-    <div class="row">
-      <div class="col s6">
-        <div class="info-grid personal-info t10-margin">
-            <a id="road" href="#!">
-              <div class="overlay-bg">
-                 <div class="content-box">
-                    <i class="mdi-action-account-circle small text-white"> </i> 
-                    <h3>Roads</h3>
-                </div> 
-           </div>
-        </a>
-    </div>
- </div>
-    <div id="ladies_complain" class="col s6">
-        <div class="info-grid ladis-info t10-margin">
-            <a id="water" href="#!">
-              <div class="overlay-bg">
-                 <div class="content-box">
-                    <i class="mdi-action-face-unlock small text-white"> </i> 
-                    <h3>Water</h3>
-                </div> 
-           </div>
-        </a>
-    </div>
- </div> 
-</div>
-    <div class="row"></div>
-    <div class="row"></div>
-    
-<div class="row">
- <div class="col s6">
-        <div class="info-grid cmp-info">
-            <a id="electricity" href="#!">
-              <div class="overlay-bg">
-                 <div class="content-box">
-                    <i class="mdi-editor-border-color small text-white"> </i> 
-                    <h3>Electricity</h3>
-                </div> 
-           </div>
-        </a>
-    </div>
- </div> 
-  <div class="col s6">
-        <div class="info-grid job-info">
-            <a id="garbage" href="#!">
-              <div class="overlay-bg">
-                 <div class="content-box">
-                    <i class="mdi-social-school small text-white"> </i> 
-                    <h3>Garbage</h3>
-                </div> 
-           </div>
-        </a>
-    </div>
-   </div> 
-</div>
-</div>
 </body>
 </html>

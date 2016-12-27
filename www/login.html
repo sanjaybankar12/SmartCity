@@ -167,7 +167,8 @@
                         sessionStorage.setItem("uid",uid);
                         
                         $.ajax({
-                            type:"POST",                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/login.php",
+                            type:"POST",                          
+                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/login.php",
                             data:{"uid":uid,"pass":pass},
                             datatype:"json",
                             success:function(response,testStatus,jqXHR)
@@ -177,7 +178,7 @@
                                 
                                 if(response.text=="success")
                                 {
-                                    window.location.href="menu.html";
+                                    window.location.href="home.html";
                                 }
                                 else
                                 {
@@ -222,7 +223,7 @@
                   <div class="input-field col s12">
                     <i class="mdi-social-person-outline prefix"></i>
                     <input id="name" name="name" type="text">
-                    <label for="name" class="center-align">Email</label>
+                    <label for="name" class="center-align">Username</label>
                   </div>
                 </div>
                 <div class="row margin">
@@ -232,7 +233,7 @@
                     <label for="pass" class="center-align">Password</label>
                   </div>
                 </div>
-                  <div  class="row">
+                  <div class="row">
                       <div style="text-align:center" class="input-field col s12 center">
                           <button id="logbtn" class="btn green" type="submit"  name="action">Login</button>
                           <br/><br/>

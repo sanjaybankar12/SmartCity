@@ -5,7 +5,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "jsapp/template-blank-cordova-project-lite/sample.zip",
       "projectGuid": "aeab085e-80cd-43c0-a2c2-49b40eb60fac",
-      "lastModifiedDate": 1482478433487,
+      "lastModifiedDate": 1482759765636,
       "creationDate": 1482404560537
     },
     "XDK-app-designer": "false",
@@ -257,6 +257,30 @@
         "data": {},
         "dependedBy": [],
         "custom": "true"
+      },
+      {
+        "id": "cordova-plugin-camera",
+        "name": "Camera",
+        "version": "2.2.0",
+        "originType": "cordova.io",
+        "origin": "cordova-plugin-camera",
+        "gitref": "",
+        "paramvals": {},
+        "sourceLocation": "plugins/cordova-plugin-camera",
+        "selectedState": "Included",
+        "checksum": "ec9311a8",
+        "dependsOn": [
+          "cordova-plugin-compat"
+        ],
+        "topLevel": true,
+        "permissions": {
+          "android:name": [
+            "android.permission.WRITE_EXTERNAL_STORAGE"
+          ]
+        },
+        "description": "Cordova Camera Plugin",
+        "data": {},
+        "dependedBy": []
       }
     ],
     "buildConfigurations": {

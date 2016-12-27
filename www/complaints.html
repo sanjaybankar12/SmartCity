@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<!--
+  * Please see the included README.md file for license terms and conditions.
+  -->
+<head>
+    <title>Blank Cordova Mobile App Project Template (Lite)</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+
+    <!-- see http://webdesign.tutsplus.com/tutorials/htmlcss-tutorials/quick-tip-dont-forget-the-viewport-meta-tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <style>
+        /* following two viewport lines are equivalent to the meta viewport statement above, needed for Windows */
+        /* see http://www.quirksmode.org/blog/archives/2014/05/html5_dev_conf.html and http://dev.w3.org/csswg/css-device-adapt/ */
+        @-ms-viewport { width: 100vw ; zoom: 100% ; }  @viewport { width: 100vw ; zoom: 100% ; }
+        @-ms-viewport { user-zoom: fixed ; }           @viewport { user-zoom: fixed ; }
+    </style>
+    <link href="css/icons.css" rel="stylesheet">
+     <link rel="stylesheet" href="css/materilize.css"/> <!-- materilize css lib file -->
+     <link rel="stylesheet" href="css/style.css"/> <!-- customecss lib file -->
+    <script src="cordova.js"></script>          <!-- phantom library, needed for Cordova api calls, added during build -->
+    <script src="js/app.js"></script>           <!-- recommended location of your JavaScript code relative to other JS files -->
+      <script src="js/jquery-2.1.1.js"></script>  
+      <script src="js/validation/jquery.validate.min.js"></script>  
+    <script src="js/materilize.js"></script>           <!-- materilize design lib file -->
+    <script src="xdk/init-dev.js"></script>     <!-- normalizes device and document ready events, see README for details -->
+    <script src="js/db.js"></script>
+    <script>
+        $(document).ready(function()
+        {
+            document.addEventListener("deviceready",onReady,false);
+            $(".button-collapse").sideNav();
+            
+            function onReady()
+            {                
+                navigator.splashscreen.hide();
+                init_client();
+                
+                var cat=sessionStorage.getItem("cat");  
+                $("#det").text(cat+" Details");
+                $("#cmp").text(cat+" Complaints");
+                
+                document.addEventListener("backbutton",onBack,false);
+            }
+
+            function onBack()
+            {
+                 window.location.href="home.html";
+                //navigator.notification.confirm("Do you want to exit app?",onExit);
+            }
+            
+            function onExit(buttonIndex)
+            {
+                if(buttonIndex===1)
+                {
+                    navigator.app.exitApp();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            
+            
+            $("#enquiryform").validate({
+                
+                errorClass:"validation-error",
+                rules:
+                {
+                    ename:
+                    {
+                        required:true
+                    },
+                    contact:
+                    {
+                        required:true,
+                        minlength:10,
+                        maxlength:10,
+                        number:true
+                    },
+                    subject:
+                    {
+                        required:true
+                    },
+                    edesc:
+                    {
+                        required:true
+                    }
+                },
+                messages:
+                {
+                    ename:
+                    {
+                        required:"* Name is required"
+                    },
+                    contact:
+                    {
+                        required:"* Mobile no. is required",
+                        minlength:"* Mobile no. at least contains 10 digits",
+                        maxlength:"* Mobile no. at most contains 10 digits",
+                        number:"* Mobile no. contains only digits"
+                    },
+                    subject:
+                    {
+                        required:"* Subject is required"
+                    },
+                    edesc:
+                    {
+                        required:"* Description is required"
+                    }
+                },
+                highlight:function(element){
+                    $(element).closest('.space').addClass("has-error");
+                },
+                unhighlight:function(element){
+                    $(element).closest('.space').removeClass("has-error");
+                },
+                errorElement:"span",
+                errorPlacement:function(error,element){
+                    var placement=$(element).data('error');
+                    if(placement)
+                    {
+                         $(placement).append(error);   
+                    }
+                    else
+                    {
+                         error.insertAfter(element);  
+                    }
+                }
+                
+            });
+            
+            var imagePath="";
+            var File_Name="";
+            $("#upl_picid").click(function()
+            {
+                uploadFile();
+                
+            });
+            
+            function uploadFile()
+            {
+                var srcType=Camera.PictureSourceType.PHOTOLIBRARY;
+                var options=setOptions(srcType);
+                                
+                navigator.camera.getPicture(uploadPic,function(error){ },options);
+            }
+            
+            function setOptions(srcType)
+            {
+                var options={
+                    quality:30,
+                    destinationType:Camera.DestinationType.NATIVE_URI,
+                    sourceType:srcType,
+                    encodingType:Camera.EncodingType.JPEG,
+                    mediaType:Camera.MediaType.PICTURE,
+                    allowEdit:false,
+                    correctOrientation:true
+                };
+                
+                return options;
+            }
+            
+            function uploadPic(imageURI)
+            {
+                var filePATH=imageURI.split("?");
+                var File_Name=filePATH[0].substr(imageURI.lastIndexOf('/')+1);
+                imagePath=imageURI;
+                $("#filepath_id").val(File_Name);
+                
+            }
+            
+            function upload(imageURI,File_Name)
+            {
+                var options=new FileUploadOptions();
+                options.fileKey="file";
+                options.fileName=File_Name;
+                options.mimeType="image/jpeg";
+                var params = new Object();
+                params.value1="test";
+                params.value2="test";
+                options.params=params;
+                options.chunkedMode=false;
+                
+                var dest="http://www.sanjaybankar.co.in/ieeeprojects/smartcity/upload.php";
+                var fileTransfer = new FileTransfer();
+                fileTransfer.upload(imageURI,dest,function(success){ },function(error){ imagePath=""; },options);
+                
+            }
+            
+            $("#enquiryform").on('submit',function()
+            {
+                var name=$("#icon_prefix3").val();
+                var isname=$("#icon_prefix3").valid();
+                var phone=$("#icon_prefix").val();
+                var isphone=$("#icon_prefix").valid();
+                var subject=$("#icon_prefix4").val();
+                var issubject=$("#icon_prefix4").valid();
+                var desc=$("#icon_prefix2").val();
+                var isdesc=$("#icon_prefix2").valid();
+                
+                if(isname && isphone && issubject && isdesc)
+                {                    
+                    if(navigator.connection.type!=Connection.NONE)
+                    {
+                        $("#esub_but").attr("disabled","true");
+                        $("#formstatus").text("");
+                        $("#esub_but").text("Plz. wait..");
+                        if(imagePath!=="")
+                        {
+                            upload(imagePath,File_Name);
+                        }
+                        
+                        $.ajax({
+                            type:"POST",
+                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/complaint.php",
+                            data:{"name":name,"phone":phone,"subject":subject,"desc":desc},
+                            dataType:"json",
+                            success:function(response,testStatus,jqXHR)
+                            {
+                                $("input[type=text][name=ename]").val('');
+                                $("input[type=text][name=contact]").val('');
+                                $("input[type=text][name=subject]").val('');
+                                $("#icon_prefix2").val('');
+
+                                $("#formstatus").text("Your complain register successfully.");
+                                $("#filepath_id").val('');
+                                imagePath="";
+                                
+                                $("#esub_but").text("Submit Complaint");
+                                $("#esub_but").removeAttr("disabled");
+                                window.setTimeout(function()
+                                {  
+                                    $("#formstatus").text(""); 
+                                    getRegistrationDetails();
+                                },3000);
+
+                            },
+                            error:function(response,testStatus,jqXHR)
+                            {
+                                $("#esub_but").removeAttr("disabled");
+                                $("#esub_but").text("Submit Complaint");
+                                $("#formstatus").text("Server is not responding, try again...");
+                            }
+                        });
+                        
+                    }
+                    else
+                    {
+                        navigator.notification.alert("Internet need to be proceed, try again...",function(msg){ },"Warning","Ok");
+                    }
+                    
+                }
+                
+            });
+            
+        });
+    </script>
+    <style>
+        .hm_cvr
+        {
+            text-align: center;
+        }
+        #header .nav-wrapper
+        {
+            background-color: royalblue;
+        }
+        #slide-out li a
+        {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .mid_cvr
+        {
+           margin: 10% auto;
+            width: 100%;
+            text-align: center;
+        }
+        .mid_cvr button
+        {
+            width: 80%;
+            height: 40px;
+        }
+        #det_cvr
+        {
+            width: 80%;
+            height: 180px;
+            margin: 5% auto;
+            background-color: #fff;
+            margin: auto;
+            background-image: url(images/news1.jpg);
+            background-size: 100% 100%;
+                
+        }
+        #cp_cvr
+        {
+            width: 80%;
+            margin: 5% auto;
+            height: 180px;
+            background-color: #fff;
+            margin: auto;
+            background-image: url(images/complaints.jpg);
+            background-size: 100% 100%;
+                
+        }
+        
+        
+        #sub_but_cvr
+        {
+            text-align: center;
+            margin:5% auto;
+        }
+        
+        input
+        {
+            margin-bottom: 0;
+            margin-top: 0;
+        }
+        
+        #enquiryform span
+        {
+            float:left;
+            margin-left: 20px;
+        }
+        
+    </style>
+</head>
+
+<body>
+      <div class="hm_cvr">
+        <div id="header">
+            <div class="navbar-fixed red">
+                <nav>
+                  <div class="nav-wrapper">
+                    <a href="#" data-activates="slide-out" class="button-collapse white-text nav-btn">
+                        <i class="mdi-navigation-menu"></i>
+                      </a>
+                    <h2 class="head-title">Smart City&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+                  </div>
+                </nav>
+          </div>
+        </div>
+        <ul id="slide-out" class="side-nav">
+            <li style="background-color:red; ">
+                <a style="font-size:20px; color:#fff" href="#!">Smart City</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li>
+                <a href="#!">Road</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li>
+                <a href="#!">Water</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li>
+                <a href="#!">Electricity</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li>
+                <a href="#!">Garbage</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+           
+        </ul>       
+    </div>
+    <div class="mid_cvr">
+       
+    <div class="row">
+        <div style="color:#fff;text-align:center;" id="formstatus"></div>
+        <form action="#" method="post" class="col s12" id="enquiryform">
+          <div class="row">
+              <div class="input-field col s12 white-text">
+                  <i class="mdi-action-account-circle prefix"></i>
+                    <input id="icon_prefix3" type="text" name="ename"  class=" white-text">
+                    <label for="icon_prefix3" class="">Name</label>
+                </div>
+              <div class="input-field col s12 white-text">
+                  <i class="mdi-communication-phone prefix"></i>
+                    <input id="icon_prefix" type="text" name="contact"  class=" white-text">
+                    <label for="icon_prefix" class="">Phone</label>
+                </div>
+                <div class="input-field col s12 white-text">
+                  <i class="mdi-content-link prefix"></i>
+                    <input id="icon_prefix4"  type="text" name="subject" class=" white-text">
+                    <label for="icon_prefix4" class="">Subject</label>
+                </div>
+              <div class="input-field col s12 white-text">
+                      <i class="mdi-editor-mode-edit prefix"></i>
+                      <textarea id="icon_prefix2" rows="2" class="materialize-textarea"  name="edesc"></textarea>
+                      <label for="icon_prefix2" class="">Description</label>
+             </div>            
+              <div id="photo_upcvr" class="input-field col s12 ">
+                      <div class="file-field input-field">
+                          <div id="upl_picid" class="btn cyan">
+                            <span>Photo</span>
+                          </div>
+                          <div class="file-path-wrapper">
+                            <input disabled="true" id="filepath_id" class="file-path nb-margin" type="text" placeholder="Upload only one file">
+                          </div>
+                    </div>
+                </div>
+              <div id="sub_but_cvr" class="col s12">
+              <button class="btn red" type="submit" id="esub_but" name="action">Submit Complaint</button>
+             </div>
+            </div>
+        
+        </form>
+    </div>
+        
+    </div>    
+        
+</body>
+</html>
