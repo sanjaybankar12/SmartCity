@@ -141,44 +141,34 @@
             
             var imagePath="";
             var File_Name="";
-            $("#upl_picid").click(function()
-            {
-                uploadFile();
-                
-            });
-            
-            function uploadFile()
-            {
-                var srcType=Camera.PictureSourceType.PHOTOLIBRARY;
-                var options=setOptions(srcType);
-                                
-                navigator.camera.getPicture(uploadPic,function(error){ },options);
-            }
-            
             function setOptions(srcType)
             {
-                var options={
-                    quality:20,
-                    destinationType:Camera.DestinationType.NATIVE_URI,
-                    sourceType:srcType,
-                    encodingType:Camera.EncodingType.JPEG,
-                    mediaType:Camera.MediaType.PICTURE,
-                    allowEdit:false,
-                    correctOrientation:true
-                };
-                
-                return options;
+                var options = {
+                        quality: 20,
+                        destinationType: Camera.DestinationType.NATIVE_URI,
+                        sourceType: srcType,
+                        encodingType: Camera.EncodingType.JPEG,
+                        mediaType: Camera.MediaType.PICTURE,
+                        allowEdit: false,
+                        correctOrientation: true  //Corrects Android orientation quirks
+                    }
+                    return options;
             }
-            
+
+            function uploadFile()
+            {
+                var srcType = Camera.PictureSourceType.PHOTOLIBRARY;
+                var options = setOptions(srcType);
+
+                navigator.camera.getPicture(uploadPic,function(error){ },options);
+            }
+
             function uploadPic(imageURI)
             {
-                var filePATH=imageURI.split("?");
-                var File_Name=filePATH[0].substr(imageURI.lastIndexOf('/')+1);
-                imagePath=imageURI;
-                sessionStorage.setItem("imagePath",imagePath);
-                sessionStorage.setItem("filename",File_Name);
-                $("#filepath_id").val(File_Name);
-                                
+                    var filePATH=imageURI.split("?");
+                    File_Name=filePATH[0].substr(imageURI.lastIndexOf('/')+1);
+                    imagePath=imageURI;
+                    $("#filepath_id").val(File_Name);
             }
             
             function upload(imageURI,File_Name)
@@ -193,7 +183,7 @@
                      options.params = params;
                      options.chunkedMode = false;
 
-                    var dest="http://www.sanjaybankar.co.in/ieeeprojects/smartcity/imgupload.php";
+                    var dest="http://sanjaybankar.co.in/ieeeprojects/smartcity/imgupload.php";
                     var fileTransfer = new FileTransfer();
 
                     fileTransfer.upload(imageURI,dest,function(success){  },function(error){ 
@@ -220,8 +210,6 @@
                         $("#esub_but").attr("disabled","true");
                         $("#formstatus").text("");
                         $("#esub_but").text("Plz. wait..");
-                        var imagePath=sessionStorage.getItem("imagePath");
-                        var File_Name=sessionStorage.getItem("filename");
                         if(imagePath!=="")
                         {
                             upload(imagePath,File_Name);
@@ -298,6 +286,11 @@
                 
                 return false;
                 
+            });
+            
+            $("#upl_picid").click(function()
+            {
+                uploadFile();
             });
             
             $("#nvroad").click(function()
