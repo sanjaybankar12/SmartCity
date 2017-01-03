@@ -172,8 +172,8 @@
                     {
                         $("#regbtn").attr("disabled","true");
                         $.ajax({
-                            type:"POST",                                                  url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/register.php",
-                            data:{"seltype":seltype,"name":name,"phone":phone,"email":email,"pass":pass},
+                            type:"POST",                                                  url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/cityregister.php",
+                            data:{"seltype":seltype,"uname":name,"phone":phone,"email":email,"pass":pass},
                             dataType:"json",
                             success:function(response,testStatus,jqXHR)
                             {

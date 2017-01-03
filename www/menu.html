@@ -38,7 +38,7 @@
                 var cat=sessionStorage.getItem("cat");  
                 $("#det").text(cat+" Details");
                 $("#cmp").text(cat+" Complaints");
-                
+                document.getElementById("uid").textContent=sessionStorage.getItem("uname");
                 document.addEventListener("backbutton",onBack,false);
             }
 
@@ -64,6 +64,31 @@
             $("#cmp").click(function()
             {
                 window.location.href="complaints.html";
+            });
+            
+            
+            $("#nvroad").click(function()
+            {
+                sessionStorage.setItem("cat","road");  
+                window.location.href="menu.html";
+            });
+            
+            $("#nvwater").click(function()
+            {
+                sessionStorage.setItem("cat","water");  
+                window.location.href="menu.html";
+            });
+            
+            $("#nvelectricity").click(function()
+            {
+                sessionStorage.setItem("cat","electricity");  
+                window.location.href="menu.html";
+            });
+            
+            $("#nvgarbage").click(function()
+            {
+                sessionStorage.setItem("cat","garbage");  
+                window.location.href="menu.html";
             });
             
         });
@@ -129,7 +154,7 @@
                 </nav>
           </div>
         </div>
-        <ul id="slide-out" class="side-nav">
+         <ul id="slide-out" class="side-nav">
             <li style="background-color:red; ">
                 <a style="font-size:20px; color:#fff" href="#!">Smart City</a>
             </li>
@@ -137,31 +162,37 @@
                 <div class="divider"></div>
             </li>
             <li>
+                <a id="uid" href="#!"></a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvroad">
                 <a href="#!">Road</a>
             </li>
             <li>
                 <div class="divider"></div>
             </li>
-            <li>
+            <li id="nvwater">
                 <a href="#!">Water</a>
             </li>
             <li>
                 <div class="divider"></div>
             </li>
-            <li>
+            <li id="nvelectricity">
                 <a href="#!">Electricity</a>
             </li>
             <li>
                 <div class="divider"></div>
             </li>
-            <li>
+            <li id="nvgarbage">
                 <a href="#!">Garbage</a>
             </li>
             <li>
                 <div class="divider"></div>
             </li>
            
-        </ul>       
+        </ul>           
     </div>
     <div class="mid_cvr">
             

@@ -34,6 +34,7 @@
             {                
                 navigator.splashscreen.hide();
                 init_client();
+                document.getElementById("uid").textContent=sessionStorage.getItem("uname");
                 document.addEventListener("backbutton",onBack,false);
             }
 
@@ -79,6 +80,30 @@
                 window.location.href="menu.html";
             });
             
+             $("#nvroad").click(function()
+            {
+                sessionStorage.setItem("cat","road");  
+                window.location.href="menu.html";
+            });
+            
+            $("#nvwater").click(function()
+            {
+                sessionStorage.setItem("cat","water");  
+                window.location.href="menu.html";
+            });
+            
+            $("#nvelectricity").click(function()
+            {
+                sessionStorage.setItem("cat","electricity");  
+                window.location.href="menu.html";
+            });
+            
+            $("#nvgarbage").click(function()
+            {
+                sessionStorage.setItem("cat","garbage");  
+                window.location.href="menu.html";
+            });
+            
         });
     </script>
     <style>
@@ -117,24 +142,30 @@
                 <div class="divider"></div>
             </li>
             <li>
+                <a id="uid" href="#!"></a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvroad">
                 <a href="#!">Road</a>
             </li>
             <li>
                 <div class="divider"></div>
             </li>
-            <li>
+            <li id="nvwater">
                 <a href="#!">Water</a>
             </li>
             <li>
                 <div class="divider"></div>
             </li>
-            <li>
+            <li id="nvelectricity">
                 <a href="#!">Electricity</a>
             </li>
             <li>
                 <div class="divider"></div>
             </li>
-            <li>
+            <li id="nvgarbage">
                 <a href="#!">Garbage</a>
             </li>
             <li>

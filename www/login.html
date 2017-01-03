@@ -105,8 +105,7 @@
                 {
                     name:
                     {
-                        required:true,
-                        email:true
+                        required:true
                     },                    
                     pass:
                     {
@@ -134,8 +133,7 @@
                 {
                     name:
                     {
-                        required:" * Email is required",
-                        email:"* Email is invalid"
+                        required:" * Username is required"
                     },
                     pass:
                     {
@@ -154,22 +152,22 @@
             
             $("#log_form").on("submit",function()
             {
-                var uid=$("#name").val();
-                var isuid=$("#name").valid();
+                var uname=$("#name").val();
+                var isuname=$("#name").valid();
                 var pass=$("#pass").val();
                 var ispass=$("#pass").valid();
                 
-                if(isuid && ispass)
+                if(isuname && ispass)
                 {
                     if(navigator.connection.type!==Connection.NONE)
                     {
                         $("#logbtn").attr("disabled","true");
-                        sessionStorage.setItem("uid",uid);
+                        sessionStorage.setItem("uid",uname);
                         
                         $.ajax({
                             type:"POST",                          
-                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/login.php",
-                            data:{"uid":uid,"pass":pass},
+                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/citylogin.php",
+                            data:{"uname":uname,"pass":pass},
                             datatype:"json",
                             success:function(response,testStatus,jqXHR)
                             {
@@ -178,6 +176,13 @@
                                 
                                 if(response.text=="success")
                                 {
+                                    var userarr=response.msg;
+                                    
+                                    sessionStorage.setItem("seltype",userarr[0]);
+                                    sessionStorage.setItem("uname",userarr[1]);
+                                    sessionStorage.setItem("email",userarr[2]);
+                                    sessionStorage.setItem("phone",userarr[3]);
+                                    
                                     window.location.href="home.html";
                                 }
                                 else
