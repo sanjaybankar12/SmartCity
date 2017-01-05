@@ -82,6 +82,26 @@
                 window.location.href="menu.html";
             });
             
+            $(".mobcvr").click(function()
+            {
+                
+                
+                var number=$(this).children('span').text();
+                
+                navigator.notification.confirm("Do you want to call on "+number+"?",function(buttonIndex){
+                    
+                    if(buttonIndex==1)
+                    {
+                        var byPassAppChooser=true;
+                        window.plugins.CallNumber.callNumber(function(success){ },function(error){ 
+                            navigator.notification.alert(error.message,function(){ },"Error","Ok");
+                        },number,byPassAppChooser);
+                    }
+                    
+                },"Confirm",["Yes","No"]);                                
+                
+            });
+            
         });
     </script>
     <style>
@@ -94,7 +114,7 @@
             font-weight: bold;
             font-size: 16px;
         }
-        .mid_cvr
+         .mid_cvr
         {
             text-align: center;
             color: #fff;
@@ -102,7 +122,44 @@
         }
         .mid_cvr h3
         {
+            font-size: 20px;
+        }
+        
+        table,.ctcvr
+        {
+            background-color: #fff;
+            color: #000;
+            font-weight: bold;
             font-size: 18px;
+            width: 96%;
+            margin: 0 auto;
+        }
+        
+        .adrcvr
+        {
+            background-color: #fff;
+            color: #000;
+            font-weight: bold;
+            font-size: 18px;
+            width: 96%;
+            margin: 0 auto;
+        }
+        
+        .adrcvr ul
+        {
+            padding: 5px;
+        }
+        
+        .ctcvr
+        {
+            padding: 10px;
+        }
+        
+        .mobcvr
+        {
+            margin: 5px;
+            background-color:cornflowerblue;
+            padding: 10px;
         }
         
     </style>
@@ -159,13 +216,51 @@
             <li>
                 <div class="divider"></div>
             </li>
-           
+           <li id="newsfeed">
+                <a href="news.html">News Feed</a>
+            </li>
         </ul>       
     </div>
     
     <div class="mid_cvr">
-        <h3>Garbage Details</h3>
-    
+        <div class="row">
+            <h3>Garbage Collection Timing</h3>
+           <table class="centered highlight bordered striped">
+                <tr>
+                    <td>Morning</td>
+                    <td><span id="mfrom">09:00 AM</span>&nbsp;-&nbsp;<span id="mto">11:00</span>AM</td>
+               </tr>
+               <tr>
+                    <td>Evening</td>
+                    <td><span id="efrom">09:00 AM</span>&nbsp;-&nbsp;<span id="eto">11:00</span>AM</td>
+               </tr>
+            </table>
+        </div>
+        <div class="row">
+            <h3>Garbage Collection Location</h3>
+            <div class="adrcvr">
+                <ul>
+                    <li>Chandannagar</li>
+                    <li>
+                        <div class="divider"></div>
+                    </li>
+                    <li>Pune</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <h3>Emergency Contact Details</h3>
+            <div class="ctcvr">
+                <div class="mobcvr">
+                    <i style="float:left;" class="mdi-communication-call"></i>
+                    +91<span>9561542499</span>
+                </div>
+                <div class="mobcvr">
+                    <i style="float:left;" class="mdi-communication-call"></i>
+                    <span>121</span>
+                </div>
+            </div>
+        </div>
     </div>
         
 </body>

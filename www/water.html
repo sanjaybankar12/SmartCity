@@ -84,12 +84,21 @@
             
             $(".mobcvr").click(function()
             {
+                
+                
                 var number=$(this).children('span').text();
                 
-                var byPassAppChooser=true;
-                window.plugins.CallNumber.callNumber(function(success){ },function(error){ 
-                    navigator.notification.alert(error.message,function(){ },"Error","Ok");
-                },number,byPassAppChooser);
+                navigator.notification.confirm("Do you want to call on "+number+"?",function(buttonIndex){
+                    
+                    if(buttonIndex==1)
+                    {
+                        var byPassAppChooser=true;
+                        window.plugins.CallNumber.callNumber(function(success){ },function(error){ 
+                            navigator.notification.alert(error.message,function(){ },"Error","Ok");
+                        },number,byPassAppChooser);
+                    }
+                    
+                },"Confirm",["Yes","No"]);                                
                 
             });
             
@@ -205,7 +214,9 @@
             <li>
                 <div class="divider"></div>
             </li>
-           
+            <li id="newsfeed">
+                <a href="news.html">News Feed</a>
+            </li>
         </ul>       
         
     </div>

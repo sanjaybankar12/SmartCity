@@ -1,11 +1,16 @@
-#loc_modal
+#loc_modal,#road_modal
 {
     background-color: transparent;
     width: 95%;
     margin-left: 5%;
 }
 
-#loc_modal h3
+#road_modal .modal-content
+{
+    padding: 0;
+}
+
+#loc_modal h3,#road_modal h3
 {
     text-align: center;
     font-size: 18px;
@@ -13,15 +18,34 @@
     padding: 0;
      color: white;
 }
-#loc_modal .modal-header
+#road_modal h3
+{
+    font-size: 20px;
+    font-weight: bold;
+}
+#road_modal table td
+{
+    font-weight: normal;
+    font-size: 14px;
+}
+#road_modal table
+{
+    width: 100%;
+}
+#loc_modal .modal-header,#road_modal .modal-header
 {
     padding: 10px;
 }
 
-#loc_modal .modal-header button
+#loc_modal .modal-header button,#road_modal .modal-header button
 {
     float: right;
     color: white;
+}
+#road_modal .modal-content
+{
+     background-image: url('../images/sm.jpg');
+    background-size: 100% 100%;
 }
 #loc_modal .modal-content
 {
