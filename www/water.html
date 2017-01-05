@@ -82,6 +82,17 @@
                 window.location.href="menu.html";
             });
             
+            $(".mobcvr").click(function()
+            {
+                var number=$(this).children('span').text();
+                
+                var byPassAppChooser=true;
+                window.plugins.CallNumber.callNumber(function(success){ },function(error){ 
+                    navigator.notification.alert(error.message,function(){ },"Error","Ok");
+                },number,byPassAppChooser);
+                
+            });
+            
         });
     </script>
     <style>
@@ -93,6 +104,51 @@
         {
             font-weight: bold;
             font-size: 16px;
+        }
+        
+        .mid_cvr
+        {
+            text-align: center;
+            color: #fff;
+            
+        }
+        .mid_cvr h3
+        {
+            font-size: 20px;
+        }
+        
+        table,.ctcvr
+        {
+            background-color: #fff;
+            color: #000;
+            font-weight: bold;
+            font-size: 18px;
+            width: 96%;
+            margin: 0 auto;
+        }
+        
+        .adrcvr
+        {
+            background-color: #fff;
+            color: #000;
+            font-weight: bold;
+            font-size: 18px;
+            width: 96%;
+            margin: 0 auto;
+            padding: 10px;
+            overflow-x: scroll;
+        }
+        
+        .ctcvr
+        {
+            padding: 10px;
+        }
+        
+        .mobcvr
+        {
+            margin: 5px;
+            background-color:cornflowerblue;
+            padding: 10px;
         }
         
     </style>
@@ -153,6 +209,39 @@
         </ul>       
         
     </div>
-        
+    <div class="mid_cvr">
+        <div class="row">
+            <h3>Water Timing Details</h3>
+           <table class="centered highlight bordered striped">
+                <tr>
+                    <td>Morning</td>
+                    <td><span id="mfrom">09:00 AM</span>&nbsp;-&nbsp;<span id="mto">11:00</span>AM</td>
+               </tr>
+               <tr>
+                    <td>Evening</td>
+                    <td><span id="efrom">09:00 AM</span>&nbsp;-&nbsp;<span id="eto">11:00</span>AM</td>
+               </tr>
+            </table>
+        </div>
+        <div class="row">
+            <h3>Pumping Station Address</h3>
+            <div class="adrcvr">
+                <span>Chandannagar</span>
+            </div>
+        </div>
+        <div class="row">
+            <h3>Emergency Contact Details</h3>
+            <div class="ctcvr">
+                <div class="mobcvr">
+                    <i style="float:left;" class="mdi-communication-call"></i>
+                    +91<span>9561542499</span>
+                </div>
+                <div class="mobcvr">
+                    <i style="float:left;" class="mdi-communication-call"></i>
+                    <span>121</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

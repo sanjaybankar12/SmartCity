@@ -61,6 +61,13 @@
                 }
             }
             
+            $("#det").click(function()
+            {
+                var cat=sessionStorage.getItem("cat");  
+                window.location.href=cat.toLowerCase()+".html";
+
+            });
+            
             $("#cmp").click(function()
             {
                 window.location.href="complaints.html";

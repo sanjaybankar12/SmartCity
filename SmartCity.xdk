@@ -5,7 +5,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "jsapp/template-blank-cordova-project-lite/sample.zip",
       "projectGuid": "aeab085e-80cd-43c0-a2c2-49b40eb60fac",
-      "lastModifiedDate": 1483341541031,
+      "lastModifiedDate": 1483552937721,
       "creationDate": 1482404560537
     },
     "XDK-app-designer": "false",
@@ -96,7 +96,9 @@
         "data": {},
         "dependedBy": [
           "cordova-plugin-file-transfer",
-          "cordova-plugin-geolocation"
+          "cordova-plugin-geolocation",
+          "cordova-plugin-camera",
+          "cordova-plugin-contacts"
         ],
         "custom": "true"
       },
@@ -242,14 +244,14 @@
         "name": "Request Location Accuracy",
         "version": "2.2.0",
         "originType": "local",
-        "origin": "/E/Sanjay/Cordova Plugins/cordova-plugin-request-location-accuracy-master",
+        "origin": "/F/Study/Cordova Plugins/cordova-plugin-request-location-accuracy-master",
         "gitref": "",
         "paramvals": {},
         "sourceLocation": "plugins/cordova-plugin-request-location-accuracy",
         "selectedState": "Included",
         "checksum": "b1c3f2ee",
         "dependsOn": [],
-        "topLevel": true,
+        "topLevel": false,
         "cordovaVersion": ">=3.0.0",
         "author": "Dave Alden",
         "permissions": {},
@@ -281,6 +283,57 @@
         "description": "Cordova Camera Plugin",
         "data": {},
         "dependedBy": []
+      },
+      {
+        "id": "cordova-plugin-contacts",
+        "name": "Contacts",
+        "version": "2.1.0",
+        "originType": "cordova.io",
+        "origin": "cordova-plugin-contacts",
+        "gitref": "",
+        "paramvals": {},
+        "sourceLocation": "plugins/cordova-plugin-contacts",
+        "selectedState": "Included",
+        "checksum": "8e53b8f5",
+        "dependsOn": [
+          "cordova-plugin-compat"
+        ],
+        "topLevel": true,
+        "permissions": {
+          "android:name": [
+            "android.permission.READ_CONTACTS",
+            "android.permission.WRITE_CONTACTS",
+            "android.permission.GET_ACCOUNTS"
+          ]
+        },
+        "description": "Cordova Contacts Plugin",
+        "data": {},
+        "dependedBy": []
+      },
+      {
+        "id": "mx.ferreyra.callnumber",
+        "name": "Cordova Call Number Plugin",
+        "version": "0.0.2",
+        "originType": "local",
+        "origin": "/F/Study/Cordova Plugins/CordovaCallNumberPlugin-master",
+        "gitref": "",
+        "paramvals": {},
+        "sourceLocation": "plugins/mx.ferreyra.callnumber",
+        "selectedState": "Included",
+        "checksum": "1e1e710f",
+        "dependsOn": [],
+        "topLevel": true,
+        "cordovaVersion": ">=3.0.0",
+        "author": "Carlos Ferreyra",
+        "permissions": {
+          "android:name": [
+            "android.permission.CALL_PHONE"
+          ]
+        },
+        "description": "Call Number from Cordova Application",
+        "data": {},
+        "dependedBy": [],
+        "custom": "true"
       }
     ],
     "buildConfigurations": {

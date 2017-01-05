@@ -1,0 +1,35 @@
+#loc_modal
+{
+    background-color: transparent;
+    width: 95%;
+    margin-left: 5%;
+}
+
+#loc_modal h3
+{
+    text-align: center;
+    font-size: 18px;
+    margin: 0;
+    padding: 0;
+     color: white;
+}
+#loc_modal .modal-header
+{
+    padding: 10px;
+}
+
+#loc_modal .modal-header button
+{
+    float: right;
+    color: white;
+}
+#loc_modal .modal-content
+{
+    background-image: url(map.jpg);
+}
+
+#srachlocid
+{
+    width: 90%;
+    margin: 2% auto;
+}
