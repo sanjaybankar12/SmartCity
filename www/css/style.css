@@ -122,11 +122,10 @@ margin-bottom:0px !important;
     border: 4px solid #fff;
 }
 .overlay-bg{
-
-    background: rgba(0,188,212,0.7);
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
+background: rgba(37,89,180,0.8);
+width: 100%;
+height: 100%;
+border-radius: 50%;
 }
 .content{
     overflow-x: hidden;
