@@ -33,7 +33,7 @@
             {                
                 navigator.splashscreen.hide();
                 init_client();
-                window.location.href="home.html";
+              //  window.location.href="register.html";
                 document.addEventListener("backbutton",onBack,false);
             }
 
@@ -57,21 +57,34 @@
         });
     </script>
     <style>
+        body
+        {
+            background-color:rgb(7,7,7);
+            background-image: url(images/sd.jpg);
+        }
         #loadid
         {
-            width: 70%;
-            margin: 30% auto;
+            width: 100%;
+            margin: 25% auto;
             vertical-align: middle;
         }
         #loadid img{
             vertical-align: middle;
+        }
+        .hd
+        {
+            color: #fff;
+            text-align: center;
+            font-weight: bold;
+            font-size: 22px;
         }
     </style>
 </head>
 
 <body>
     <div id="loadid" class="adv_box">
-        <img src="images/load.gif" alt="Plz. wait loading...."/>
+        <img src="images/awsload.gif" alt="Plz. wait loading...."/>
+        <div class="hd"><span>Initializing....</span></div>
     </div>
 </body>
 </html>
