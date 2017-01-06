@@ -122,10 +122,14 @@ margin-bottom:0px !important;
     border: 4px solid #fff;
 }
 .overlay-bg{
-background: rgba(37,89,180,0.8);
-width: 100%;
-height: 100%;
-border-radius: 50%;
+
+background: rgba(37,89,180,0.8);
+
+width: 100%;
+
+height: 100%;
+
+border-radius: 50%;
 }
 .content{
     overflow-x: hidden;
@@ -173,28 +177,28 @@ display: block;
 .name-text h3 {
 font-size:10px;
 }
-.ladis-info
+.gar-info
 {
-    background-image: url(../images/stop.jpg);
+    background-image: url(../images/garbage.jpg);
     background-size: cover;
 }
 #job_listid{
 text-align:center;
 
 }
-.job-info
+.road-info
 {
-    background-image: url(../images/news1.jpg);
+    background-image: url(../images/road.jpg);
     background-size: cover;
 }
-.cmp-info
+.water-info
 {
-    background-image: url(../images/complaints.jpg);
+    background-image: url(../images/water.jpg);
     background-size: cover;
 }
-.vikas-info
+.ele-info
 {
-    background-image: url(../images/vikas.png);
+    background-image: url(../images/ele.jpg);
     background-size: cover;
 }
 .contact-info
