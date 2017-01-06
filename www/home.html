@@ -58,26 +58,58 @@
             
             $("#road").click(function()
             {
-                sessionStorage.setItem("cat","road");  
-                window.location.href="menu.html";
+                sessionStorage.setItem("cat","road"); 
+                var seltype= sessionStorage.getItem("seltype");
+                if(seltype==0)
+                {
+                    window.location.href="menu.html";
+                }
+                else if(seltype==2)
+                {
+                    window.location.href="menu.html";
+                }
             });
             
             $("#water").click(function()
             {
                 sessionStorage.setItem("cat","water");  
-                window.location.href="menu.html";
+                var seltype= sessionStorage.getItem("seltype");
+                if(seltype==0)
+                {
+                    window.location.href="menu.html";
+                }
+                else if(seltype==2)
+                {
+                    window.location.href="addwater.html";
+                }
             });
             
             $("#electricity").click(function()
             {
                 sessionStorage.setItem("cat","electricity");  
-                window.location.href="menu.html";
+                var seltype= sessionStorage.getItem("seltype");
+                if(seltype==0)
+                {
+                    window.location.href="menu.html";
+                }
+                else if(seltype==2)
+                {
+                    window.location.href="menu.html";
+                }
             });
             
             $("#garbage").click(function()
             {
                 sessionStorage.setItem("cat","garbage");  
-                window.location.href="menu.html";
+                var seltype= sessionStorage.getItem("seltype");
+                if(seltype==0)
+                {
+                    window.location.href="menu.html";
+                }
+                else if(seltype==2)
+                {
+                    window.location.href="menu.html";
+                }
             });
             
              $("#nvroad").click(function()

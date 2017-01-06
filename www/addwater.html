@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<!--
+  * Please see the included README.md file for license terms and conditions.
+  -->
+<head>
+    <title>Blank Cordova Mobile App Project Template (Lite)</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+
+    <!-- see http://webdesign.tutsplus.com/tutorials/htmlcss-tutorials/quick-tip-dont-forget-the-viewport-meta-tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <style>
+        /* following two viewport lines are equivalent to the meta viewport statement above, needed for Windows */
+        /* see http://www.quirksmode.org/blog/archives/2014/05/html5_dev_conf.html and http://dev.w3.org/csswg/css-device-adapt/ */
+        @-ms-viewport { width: 100vw ; zoom: 100% ; }  @viewport { width: 100vw ; zoom: 100% ; }
+        @-ms-viewport { user-zoom: fixed ; }           @viewport { user-zoom: fixed ; }
+    </style>
+    <link href="css/icons.css" rel="stylesheet">
+     <link rel="stylesheet" href="css/materilize.css"/> <!-- materilize css lib file -->
+     <link rel="stylesheet" href="css/style.css"/> <!-- customecss lib file -->
+    <script src="cordova.js"></script>          <!-- phantom library, needed for Cordova api calls, added during build -->
+    <script src="js/app.js"></script>           <!-- recommended location of your JavaScript code relative to other JS files -->
+      <script src="js/jquery-2.1.1.js"></script>  
+    <script src="js/materilize.js"></script>           <!-- materilize design lib file -->
+    <script src="xdk/init-dev.js"></script>     <!-- normalizes device and document ready events, see README for details -->
+    <script src="js/db.js"></script>
+    <script src="js/validation/jquery.validate.min.js"></script>
+    <script src="js/materialize.clockpicker.js"></script>
+    <link href="css/materialize.clockpicker.css" rel="stylesheet">
+    <script>
+        $(document).ready(function()
+        {
+            document.addEventListener("deviceready",onReady,false);
+            $(".button-collapse").sideNav();
+            
+            $("#phonelist").focusin();
+            
+            $(".timepicker").pickatime({
+                default:'now',
+                twelvehour:false,
+                donetext:'OK',
+                autoclose:false,
+                darktheme:true,
+                vibrate:true
+            });
+            
+            
+            function onReady()
+            {                
+                navigator.splashscreen.hide();
+                init_client();
+                document.addEventListener("backbutton",onBack,false);
+                
+                document.getElementById("uid").textContent=sessionStorage.getItem("uname");
+            }
+
+            function onBack()
+            {
+                var cat=sessionStorage.getItem("cat")+".html";
+                 window.location.href=cat;
+                //navigator.notification.confirm("Do you want to exit app?",onExit);
+            }
+            
+            function onExit(buttonIndex)
+            {
+                if(buttonIndex===1)
+                {
+                    navigator.app.exitApp();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            
+            $("#water_form").validate({
+                
+                errorClass:'validation-error',
+                rules:
+                {
+                    mornmfrm:
+                    {
+                        required:true
+                    },
+                    mornmto:
+                    {
+                        required:true
+                    },
+                    evenmfrm:
+                    {
+                        required:true
+                    },
+                    evenmto:
+                    {
+                        required:true
+                    },
+                    pumpaddr:
+                    {
+                        required:true
+                    },
+                    phonelist:
+                    {
+                        required:true
+                    }
+                },
+                messages:
+                {
+                    mornmfrm:
+                    {
+                        required:"* Select from time"
+                    },
+                    mornmto:
+                    {
+                        required:"* Select to time"
+                    },
+                    evenmfrm:
+                    {
+                        required:"* Select from time"
+                    },
+                    evenmto:
+                    {
+                        required:"* Select to time"
+                    },
+                    pumpaddr:
+                    {
+                        required:"* Enter Pumping Station address."
+                    },
+                    phonelist:
+                    {
+                        required:"* Enter emergency contact list."
+                    }
+                },
+                highlight:function(element)
+                {
+                    $(element).closest('.space').addClass('has-error');
+                },
+                unhighlight:function(element)
+                {
+                    $(element).closest('.space').removeClass('has-error');
+                },
+                errorElement:'span',
+                errorPlacement:function(error,element)
+                {
+                    var placement=$(element).data('error');
+                    if(placement)
+                    {
+                        $(placement).append(error);
+                    }
+                    else
+                    {
+                        error.insertAfter(element);
+                    }
+                }
+                
+            });
+            
+            $("#water_form").on('submit',function()
+            {
+                var mornmfrm=$("#mornmfrm").val();
+                var ismornmfrm=$("#mornmfrm").valid();
+                var mornmto=$("#mornmto").val();
+                var ismornmto=$("#mornmto").valid();
+                var evenmfrm=$("#evenmfrm").val();
+                var isevenmfrm=$("#evenmfrm").valid();
+                var evenmto=$("#evenmto").val();
+                var isevenmto=$("#evenmto").valid();
+                var pumpaddr=$("#pumpaddr").val();
+                var ispumpaddr=$("#pumpaddr").valid();
+                var phonelist=$("#phonelist").val();
+                var isphonelist=$("#phonelist").valid();
+                
+                if(ismornmfrm && ismornmto && isevenmfrm && isevenmto && ispumpaddr && isphonelist)
+                {
+                    if(navigator.connection.type!==Connection.NONE)
+                    {
+                        $("#addwaterid").text("Plz wait..");
+                        $("#addwaterid").attr("disabled","true");
+                        
+                        $.ajax({
+                            type:"POST",                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/addwater.php",
+                            data:{"mornmfrm":mornmfrm,"mornmto":mornmto,"evenmfrm":evenmfrm,"evenmto":evenmto,"pumpaddr":pumpaddr,"phonelist":phonelist},
+                            dataType:"json",
+                            success:function(response,testStatus,jqXHR)
+                            {
+                                if(response.type=="success")
+                                {
+                                    $("#res").text(response.msg);
+                                    
+                                    $("#mornmfrm").val("07:00");
+                                    $("#mornmto").val("09:00");
+                                    $("#evenmfrm").val("16:00");
+                                    $("#evenmto").val("18:00");
+                                    $("#pumpaddr").val("");
+                                    $("#phonelist").val("");
+                                    
+                                    window.setTimeout(function(){
+                                        $("#res").text("");
+                                    },3000);
+                                }
+                                else
+                                {
+                                    $("#res").text(response.msg);
+                                     window.setTimeout(function(){
+                                        $("#res").text("");
+                                    },3000);
+                                }
+                                $("#addwaterid").text("Add Details");
+                                $("#addwaterid").removeAttr("disabled");
+                                return false;
+                            },
+                            error:function(response,testStatus,jqXHR)
+                            {
+                                 $("#res").text("Server is not responding, try again...");
+                                $("#addwaterid").text("Add Details");
+                                $("#addwaterid").removeAttr("disabled");
+                                $("#res").text(response.msg);
+                                     window.setTimeout(function(){
+                                        $("#res").text("");
+                                    },3000);
+                                return false;
+                            }
+                        });
+                        return false;
+                    }
+                    else
+                    {
+                        navigator.notification.alert("Internet must to be proceed.",function(){ },"Warning","Ok");
+                        return false;
+                    }
+                    return false;
+                }
+                else
+                {
+                    return false;
+                }
+                return false;
+            });
+                        
+            $("#nvroad").click(function()
+            {
+                sessionStorage.setItem("cat","road");  
+                window.location.href="menu.html";
+            });
+            
+            $("#nvwater").click(function()
+            {
+                sessionStorage.setItem("cat","water");  
+                window.location.href="menu.html";
+            });
+            
+            $("#nvelectricity").click(function()
+            {
+                sessionStorage.setItem("cat","electricity");  
+                window.location.href="menu.html";
+            });
+            
+            $("#nvgarbage").click(function()
+            {
+                sessionStorage.setItem("cat","garbage");  
+                window.location.href="menu.html";
+            });
+            
+            
+            
+        });
+    </script>
+    <style>
+        #header .nav-wrapper
+        {
+            background-color: royalblue;
+        }
+        #slide-out li a
+        {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .mid_cvr
+        {
+            text-align: center;
+            color: #fff;
+            
+        }
+        .mid_cvr h3
+        {
+            font-size: 20px;
+        }
+        
+        #water_form span
+        {
+            float:left;
+            margin-left: 30px;
+        }
+        
+        #water_form input, #water_form textarea
+        {
+            margin-bottom: 5px;
+        }
+        
+        #addwaterid
+        {
+            margin-top: 6%;
+        }
+        
+    </style>
+</head>
+
+<body>
+      <div class="hm_cvr">
+        <div id="header">
+            <div class="navbar-fixed red">
+                <nav>
+                  <div class="nav-wrapper">
+                    <a href="#" data-activates="slide-out" class="button-collapse white-text nav-btn">
+                        <i class="mdi-navigation-menu"></i>
+                      </a>
+                    <h2 class="head-title">Smart City&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+                  </div>
+                </nav>
+          </div>
+        </div>
+        <ul id="slide-out" class="side-nav">
+            <li style="background-color:red; ">
+                <a style="font-size:20px; color:#fff" href="home.html">Smart City</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li>
+                <span><i style="float:left;" class="mdi-social-person-outline small"></i></span>
+                <a id="uid" href="#!"></a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvroad">
+                <i style="float:left;" class="mdi-navigation-fullscreen-exit small"></i>
+                <a href="#!">Road</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvwater">
+                <i style="float:left;" class="mdi-editor-format-color-fill small"></i>
+                <a href="#!">Water</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvelectricity">
+                <i style="float:left;" class="mdi-image-wb-incandescent small"></i>
+                <a href="#!">Electricity</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvgarbage">
+                <i style="float:left;" class="mdi-action-shopping-cart small"></i>
+                <a href="#!">Garbage</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="newsfeed">
+                <i style="float:left;" class="mdi-editor-format-list-bulleted small"></i>
+                <a href="news.html">News Feed</a>
+            </li>
+        </ul>         
+        
+    </div>
+    <div class="mid_cvr">
+        <div class="row"> 
+            <h3>Water Details</h3>
+            <form id="water_form">
+             <div id="res"></div>
+             <div class="input-field col s6">
+                <i class="mdi-action-alarm prefix"></i>
+                <input id="mornmfrm" placeholder="From" value="07:00" name="mornmfrm" type="text" class="timepicker">
+                <label for="mornmfrm" class="center-align">Morning Time</label>
+             </div>
+             <div  class="input-field col s6">
+                <input id="mornmto" placeholder="To" value="09:00" name="mornmto" type="text" class="timepicker">
+             </div>
+             <div class="input-field col s6">
+                <i class="mdi-action-alarm prefix"></i>
+                <input id="evenmfrm" placeholder="From" value="16:00" name="evenmfrm" type="text" class="timepicker">
+                <label for="evenmfrm" class="center-align">Evening Time</label>
+             </div>
+             <div  class="input-field col s6">
+                <input id="evenmto" placeholder="To" value="18:00" name="evenmto" type="text" class="timepicker">
+             </div>
+            <div class="input-field col s12">
+                <i class="mdi-action-room prefix"></i>
+                <textarea class="materialize-textarea" name="pumpaddr" id="pumpaddr"></textarea>
+                <label for="pumpaddr" class="center-align">Pumping Address</label>
+             </div>
+            <div class="input-field col s12">
+                <i class="mdi-communication-call prefix"></i>
+                <textarea placeholder="add COMMA seperated numbers" class="materialize-textarea" name="phonelist" id="phonelist"></textarea>
+                <label for="phonelist" class="center-align">Phone List</label>
+             </div>
+            <div class="input-field col s12">
+                <button type="submit" id="addwaterid" class="btn green">Add Details</button>
+             </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
