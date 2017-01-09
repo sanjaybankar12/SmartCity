@@ -56,8 +56,8 @@
 
             function onBack()
             {
-                var cat=sessionStorage.getItem("cat")+".html";
-                 window.location.href=cat;
+                //var cat=sessionStorage.getItem("cat")+".html";
+                 window.location.href="home.html";
                 //navigator.notification.confirm("Do you want to exit app?",onExit);
             }
             
@@ -240,25 +240,25 @@
             $("#nvroad").click(function()
             {
                 sessionStorage.setItem("cat","road");  
-                window.location.href="menu.html";
+                window.location.href="home.html";
             });
             
             $("#nvwater").click(function()
             {
                 sessionStorage.setItem("cat","water");  
-                window.location.href="menu.html";
+                window.location.href="home.html";
             });
             
             $("#nvelectricity").click(function()
             {
                 sessionStorage.setItem("cat","electricity");  
-                window.location.href="menu.html";
+                window.location.href="home.html";
             });
             
             $("#nvgarbage").click(function()
             {
                 sessionStorage.setItem("cat","garbage");  
-                window.location.href="menu.html";
+                window.location.href="home.html";
             });
             
             

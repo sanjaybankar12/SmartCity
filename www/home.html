@@ -94,7 +94,7 @@
                 }
                 else if(seltype==2)
                 {
-                    window.location.href="menu.html";
+                    window.location.href="addelectricity.html";
                 }
             });
             
@@ -121,13 +121,29 @@
             $("#nvwater").click(function()
             {
                 sessionStorage.setItem("cat","water");  
-                window.location.href="menu.html";
+                var seltype= sessionStorage.getItem("seltype");
+                if(seltype==0)
+                {
+                    window.location.href="menu.html";
+                }
+                else if(seltype==2)
+                {
+                    window.location.href="addwater.html";
+                }
             });
             
             $("#nvelectricity").click(function()
             {
                 sessionStorage.setItem("cat","electricity");  
-                window.location.href="menu.html";
+                var seltype= sessionStorage.getItem("seltype");
+                if(seltype==0)
+                {
+                    window.location.href="menu.html";
+                }
+                else if(seltype==2)
+                {
+                    window.location.href="addelectricity.html";
+                }
             });
             
             $("#nvgarbage").click(function()
