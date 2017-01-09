@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<!--
+  * Please see the included README.md file for license terms and conditions.
+  -->
+<head>
+    <title>Blank Cordova Mobile App Project Template (Lite)</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+
+    <!-- see http://webdesign.tutsplus.com/tutorials/htmlcss-tutorials/quick-tip-dont-forget-the-viewport-meta-tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <style>
+        /* following two viewport lines are equivalent to the meta viewport statement above, needed for Windows */
+        /* see http://www.quirksmode.org/blog/archives/2014/05/html5_dev_conf.html and http://dev.w3.org/csswg/css-device-adapt/ */
+        @-ms-viewport { width: 100vw ; zoom: 100% ; }  @viewport { width: 100vw ; zoom: 100% ; }
+        @-ms-viewport { user-zoom: fixed ; }           @viewport { user-zoom: fixed ; }
+    </style>
+    <link href="css/icons.css" rel="stylesheet">
+     <link rel="stylesheet" href="css/materilize.css"/> <!-- materilize css lib file -->
+     <link rel="stylesheet" href="css/style.css"/> <!-- customecss lib file -->
+    <script src="cordova.js"></script>          <!-- phantom library, needed for Cordova api calls, added during build -->
+    <script src="js/app.js"></script>           <!-- recommended location of your JavaScript code relative to other JS files -->
+     
+    <script src="js/jquery-2.1.1.js"></script>  
+    <script src="js/validation/jquery.validate.min.js"></script>  
+    <script src="js/materilize.js"></script>           <!-- materilize design lib file -->
+    <script src="xdk/init-dev.js"></script>     <!-- normalizes device and document ready events, see README for details -->
+    <script src="js/db.js"></script>  
+    <script>
+        $(document).ready(function()
+        {
+            document.addEventListener("deviceready",onReady,false);
+            $(".button-collapse").sideNav(); 
+            $('select').material_select();
+           
+            function onReady()
+            {                
+                navigator.splashscreen.hide();
+                init_client();
+                document.addEventListener("backbutton",onBack,false);
+                
+                document.getElementById("uid").textContent=sessionStorage.getItem("uname");
+            }
+
+            function onBack()
+            {
+               // var cat=sessionStorage.getItem("cat")+".html";
+                var ele=sessionStorage.getItem("ele_samepg"); 
+                if(ele=="yes")
+                {
+                    sessionStorage.setItem("ele_samepg","no");
+                    window.location.href="addelectricity.html";
+                }
+                else
+                {
+                    window.location.href="home.html";
+                }
+                //navigator.notification.confirm("Do you want to exit app?",onExit);
+            }
+            
+            function onExit(buttonIndex)
+            {
+                if(buttonIndex===1)
+                {
+                    navigator.app.exitApp();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }                                    
+            
+            $("#ele_form").validate({
+                
+                errorClass:"validation-error",
+                rules:
+                {
+                    center:
+                    {
+                        required:true
+                    },
+                    loc:
+                    {
+                        required:true
+                    }
+                },
+                messages:
+                {
+                    center:
+                    {
+                        required:"* Enter payment center."
+                    },
+                    loc:
+                    {
+                        required:"* Click to add location."
+                    }
+                },
+                highlight:function(element)
+                {
+                    $(element).closest('.space').addClass("has-error");
+                },
+                unhighlight:function(element)
+                {
+                    $(element).closest('.space').removeClass("has-error");
+                },
+                errorElement:'span',
+                errorPlacement:function(error,element)
+                {
+                    var placement=$(element).data('error');
+                    if(placement)
+                    {
+                        $(placement).append(error);
+                    }
+                    else 
+                    {
+                        error.insertAfter(element);
+                    }
+                }
+                
+            });
+            
+            $("#ele_form").on('submit',function()
+            {
+                var center=$("#center").val();
+                var iscenter=$("#center").valid();
+                var loc=$("#loc").val();
+                var isloc=$("#loc").valid();
+                
+                $("payres").text('');
+                if(iscenter && isloc)
+                {
+                    if(navigator.connection.type!=Connection.NONE)
+                    {
+                        var long=localStorage.getItem("plong");
+                        var lat=localStorage.getItem("plat");
+                        
+                        $("#addcenter_but").attr("disabled","true");
+                        
+                        $.ajax({
+                            type:"POST",                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/addpaycenter.php",
+                            data:{"center":center,"long":long,"lat":lat},
+                            dataType:"json",
+                            success:function(response,testStatus,jqXHR)
+                            {
+                                if(response.type=="success")
+                                {
+                                    $("payres").text(response.msg);
+                                }
+                                else
+                                {
+                                    $("payres").text(response.msg);
+                                }
+                                $("#addcenter_but").removeAttr("disabled");
+                                window.setTimeout(function(){
+                                    $("payres").text('');
+                                },2000);
+                                return false;
+                            },
+                            error:function(response,testStatus,jqXHR)
+                            {
+                                $("#addcenter_but").removeAttr("disabled");
+                                $("payres").text("Server is not responding, try again...");
+                                window.setTimeout(function(){
+                                    $("payres").text('');
+                                },2000);
+                               return false; 
+                            }
+                        });
+                        return false;
+                    }
+                    else
+                    {
+                        navigator.notification.alert("Internet must to be proceed.",function(){ },"Warning","Ok");
+                        return false;
+                    }
+                }
+                
+                return false;
+            });
+                        
+            $("#nvroad").click(function()
+            {
+                sessionStorage.setItem("cat","road");  
+                window.location.href="home.html";
+            });
+            
+            $("#nvwater").click(function()
+            {
+                sessionStorage.setItem("cat","water");  
+                window.location.href="home.html";
+            });
+            
+            $("#nvelectricity").click(function()
+            {
+                sessionStorage.setItem("cat","electricity");  
+                window.location.href="home.html";
+            });
+            
+            $("#nvgarbage").click(function()
+            {
+                sessionStorage.setItem("cat","garbage");  
+                window.location.href="home.html";
+            });
+            
+          
+        });
+    </script>
+    <style>
+        #header .nav-wrapper
+        {
+            background-color: royalblue;
+        }
+        #slide-out li a
+        {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .mid_cvr
+        {
+            text-align: center;
+            color: #fff;
+            
+        }
+        .mid_cvr h3
+        {
+            font-size: 20px;
+        }
+        
+        #add_ele_but,#add_ph_but,#add_payctr_but
+        {
+            width: 90%;
+        }
+        
+        #center,#loc
+        {
+            margin-bottom: 8px;
+        }
+                
+        .row
+        {
+            vertical-align: middle;
+            margin: 2% auto;
+        }
+        
+        #ele_form 
+        {
+            
+        }               
+        
+    </style>
+</head>
+
+<body>              
+      <div class="hm_cvr">
+        <div id="header">
+            <div class="navbar-fixed red">
+                <nav>
+                  <div class="nav-wrapper">
+                    <a href="#" data-activates="slide-out" class="button-collapse white-text nav-btn">
+                        <i class="mdi-navigation-menu"></i>
+                      </a>
+                    <h2 class="head-title">Smart City&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+                  </div>
+                </nav>
+          </div>
+        </div>
+        <ul id="slide-out" class="side-nav">
+            <li style="background-color:red; ">
+                <a style="font-size:20px; color:#fff" href="home.html">Smart City</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li>
+                <span><i style="float:left;" class="mdi-social-person-outline small"></i></span>
+                <a id="uid" href="#!"></a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvroad">
+                <i style="float:left;" class="mdi-navigation-fullscreen-exit small"></i>
+                <a href="#!">Road</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvwater">
+                <i style="float:left;" class="mdi-editor-format-color-fill small"></i>
+                <a href="#!">Water</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvelectricity">
+                <i style="float:left;" class="mdi-image-wb-incandescent small"></i>
+                <a href="#!">Electricity</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvgarbage">
+                <i style="float:left;" class="mdi-action-shopping-cart small"></i>
+                <a href="#!">Garbage</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="newsfeed">
+                <i style="float:left;" class="mdi-editor-format-list-bulleted small"></i>
+                <a href="news.html">News Feed</a>
+            </li>
+        </ul>         
+        
+    </div>
+    <div class="mid_cvr">
+        <div class="row">             
+            <form id="ele_form">
+            <h3>Electricity Details</h3>
+             <div id="res"></div> 
+                <div style="text-align: left;" class="input-field col s12">
+                    <i class="mdi-social-location-city prefix"></i>
+                    <select name="wardlist" id="wardlist" >
+                        <option>dddd</option>
+                    </select>
+                    <label for="wardlist" class="center-align">Select Wards</label>
+                </div>
+                <div style="text-align: left;" class="input-field col s12">
+                    <i class="mdi-social-domain prefix"></i>
+                    <select name="centerlist" id="centerlist" ></select>
+                    <label for="centerlist" class="center-align">Select Payment Center</label>
+                </div>
+                <div class="input-field col s12">
+                    <i class="mdi-editor-border-color prefix"></i>
+                    <input type="text" placeholder="Status" name="status" id="status" />
+                    <label for="status" class="center-align">Electricity Status</label>
+                </div>
+                <div class="input-field col s12">
+                    <i class="mdi-communication-call prefix"></i>
+                    <textarea placeholder="comma seperated numbers" class="materialize-textarea" name="phonelist" id="phonelist"></textarea>
+                    <label for="phonelist" class="center-align">Emergency Contact List</label>
+                </div>
+                <div class="input-field col s12">
+                    <button type="submit" class="btn green">Add Details</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+</body>
+</html>

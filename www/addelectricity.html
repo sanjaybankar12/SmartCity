@@ -17,23 +17,24 @@
     </style>
     <link href="css/bootstrap.min.css" rel="stylesheet"/>
     <link href="css/modal.css" rel="stylesheet"/>
-    <link href="css/icons.css" rel="stylesheet"/>
+    <link href="css/icons.css" rel="stylesheet">
      <link rel="stylesheet" href="css/materilize.css"/> <!-- materilize css lib file -->
      <link rel="stylesheet" href="css/style.css"/> <!-- customecss lib file -->
     <script src="cordova.js"></script>          <!-- phantom library, needed for Cordova api calls, added during build -->
     <script src="js/app.js"></script>           <!-- recommended location of your JavaScript code relative to other JS files -->
-      <script src="js/jquery-2.1.1.js"></script>  
+     
+    <script src="js/jquery-2.1.1.js"></script>  
+    <script src="js/validation/jquery.validate.min.js"></script>  
     <script src="js/materilize.js"></script>           <!-- materilize design lib file -->
     <script src="xdk/init-dev.js"></script>     <!-- normalizes device and document ready events, see README for details -->
-    <script src="js/db.js"></script>
-    <script src="js/validation/jquery.validate.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="js/db.js"></script>  
+    <script src="js/bootstrap.min.js"></script>  
     <script>
         $(document).ready(function()
         {
             document.addEventListener("deviceready",onReady,false);
-            $(".button-collapse").sideNav();                        
-            
+            $(".button-collapse").sideNav(); 
+           
             function onReady()
             {                
                 navigator.splashscreen.hide();
@@ -71,6 +72,112 @@
                     return false;
                 }
             }                                    
+            
+            $("#phase_form").validate({
+                
+                errorClass:"validation-error",
+                rules:
+                {
+                    ward:
+                    {
+                        required:true
+                    },
+                    phase:
+                    {
+                        required:true
+                    }
+                },
+                messages:
+                {
+                    ward:
+                    {
+                        required:"* Enter payment center."
+                    },
+                    phase:
+                    {
+                        required:"* Click to add location."
+                    }
+                },
+                highlight:function(element)
+                {
+                    $(element).closest('.space').addClass("has-error");
+                },
+                unhighlight:function(element)
+                {
+                    $(element).closest('.space').removeClass("has-error");
+                },
+                errorElement:'span',
+                errorPlacement:function(error,element)
+                {
+                    var placement=$(element).data('error');
+                    if(placement)
+                    {
+                        $(placement).append(error);
+                    }
+                    else 
+                    {
+                        error.insertAfter(element);
+                    }
+                }
+                
+            });
+            
+            $("#phase_form").on('submit',function()
+            {
+                var ward=$("#ward").val();
+                var isward=$("#ward").valid();
+                var phase=$("#phase").val();
+                var isphase=$("#phase").valid();
+                
+                $("#phaseres").text('');
+                if(isward && isphase)
+                {
+                    if(navigator.connection.type!=Connection.NONE)
+                    {                        
+                        $("#addcenter_but").attr("disabled","true");
+                        
+                        $.ajax({
+                            type:"POST",
+                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/addphase.php",
+                            data:{"ward":ward,"phase":phase},
+                            dataType:"json",
+                            success:function(response,testStatus,jqXHR)
+                            {
+                                if(response.type=="success")
+                                {
+                                    $("#phaseres").text(response.msg);
+                                }
+                                else
+                                {
+                                    $("#phaseres").text(response.msg);
+                                }
+                                $("#addcenter_but").removeAttr("disabled");
+                                window.setTimeout(function(){
+                                    $("#phaseres").text('');
+                                },2000);
+                                return false;
+                            },
+                            error:function(response,testStatus,jqXHR)
+                            {
+                                $("#addcenter_but").removeAttr("disabled");
+                                $("#phaseres").text("Server is not responding, try again...");
+                                window.setTimeout(function(){
+                                    $("#phaseres").text('');
+                                },2000);
+                               return false; 
+                            }
+                        });
+                        return false;
+                    }
+                    else
+                    {
+                        navigator.notification.alert("Internet must to be proceed.",function(){ },"Warning","Ok");
+                        return false;
+                    }
+                }
+                
+                return false;
+            });
             
             $("#pay_form").validate({
                 
@@ -127,15 +234,53 @@
                 var iscenter=$("#center").valid();
                 var loc=$("#loc").val();
                 var isloc=$("#loc").valid();
+                
+                $("#payres").text('');
                 if(iscenter && isloc)
                 {
                     if(navigator.connection.type!=Connection.NONE)
                     {
+                        var long=localStorage.getItem("plong");
+                        var lat=localStorage.getItem("plat");
                         
+                        $("#addcenter_but").attr("disabled","true");
+                        
+                        $.ajax({
+                            type:"POST",
+                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/addpaycenter.php",
+                            data:{"center":center,"long":long,"lat":lat},
+                            dataType:"json",
+                            success:function(response,testStatus,jqXHR)
+                            {
+                                if(response.type=="success")
+                                {
+                                    $("#payres").text(response.msg);
+                                }
+                                else
+                                {
+                                    $("#payres").text(response.msg);
+                                }
+                                $("#addcenter_but").removeAttr("disabled");
+                                window.setTimeout(function(){
+                                    $("#payres").text('');
+                                },2000);
+                                return false;
+                            },
+                            error:function(response,testStatus,jqXHR)
+                            {
+                                $("#addcenter_but").removeAttr("disabled");
+                                $("#payres").text("Server is not responding, try again...");
+                                window.setTimeout(function(){
+                                    $("#payres").text('');
+                                },2000);
+                               return false; 
+                            }
+                        });
+                        return false;
                     }
                     else
                     {
-                        navigator.notification.alert("Internet must to be proceed.","Warning","Ok");
+                        navigator.notification.alert("Internet must to be proceed.",function(){ },"Warning","Ok");
                         return false;
                     }
                 }
@@ -176,9 +321,8 @@
             
             $("#add_ele_but").click(function()
             {
-                $(".up").slideUp('slow');
-                sessionStorage.setItem("ele_samepg","yes");  
-                $("#ele_form").slideDown('slow');
+                sessionStorage.setItem("ele_samepg","no");  
+                window.location.href="addelectricitydetails.html";
             });
             
             $("#add_payctr_but").click(function()
@@ -204,6 +348,9 @@
                                 {
                                      var long=response.results[0].geometry.location.lng;
                                      var lat=response.results[0].geometry.location.lat;
+                                    
+                                     localStorage.setItem("plong",long);
+                                     localStorage.setItem("plat",lat);
                                     
                                      $("#loc").val("long="+long+", lat="+lat);
                                      $("#loc_modal").modal('hide');
@@ -265,9 +412,9 @@
             width: 90%;
         }
         
-        #phase_form,#ele_form,#pay_form
+        #phase_form,#pay_form
         {
-            display: none;
+           display: none;
         }
         
         #center,#loc
@@ -314,10 +461,20 @@
             margin: 2% auto;
         }
         
+        #ele_form 
+        {
+            
+        }
+        
+        #loc_modal
+        {
+            margin-left: 2%;
+        }
+        
     </style>
 </head>
 
-<body>
+<body>              
       <div class="hm_cvr">
         <div id="header">
             <div class="navbar-fixed red">
@@ -396,6 +553,7 @@
             </div>
             <form id="phase_form">
                 <h3>Phase Details</h3>
+                <div id="phaseres"></div>
                 <div class="input-field col s12">
                     <i class="mdi-social-domain prefix"></i>
                     <input type="text" name="ward" id="ward" />
@@ -409,11 +567,12 @@
                 <div class="row">
                 </div>
                 <div class="input-field col s12">
-                    <button type="submit" class="btn green">Add Phase</button>
+                    <button type="submit" id="addphase_but" class="btn green">Add Phase</button>
                 </div>
             </form>
              <form id="pay_form">
                 <h3>Payment Center</h3>
+                <div id="payres"></div>
                 <div class="input-field col s12">
                     <i class="mdi-editor-border-color prefix"></i>
                     <input type="text" placeholder="Your Location" name="center" id="center" />
@@ -427,26 +586,9 @@
                 <div class="row">
                 </div>
                 <div class="input-field col s12">
-                    <button type="submit" class="btn green">Add Center</button>
+                    <button type="submit" id="addcenter_but" class="btn green">Add Center</button>
                 </div>
-            </form>
-            <form id="ele_form">
-            <h3>Electricity Details</h3>
-             <div id="res"></div> 
-                <div class="input-field col s12">
-                    <i class="mdi-editor-border-color prefix"></i>
-                    <input type="text" name="status" id="status" />
-                    <label for="status" class="center-align">Electricity Status</label>
-                </div>
-                <div class="input-field col s12">
-                    <i class="mdi-communication-call prefix"></i>
-                    <textarea placeholder="comma seperated numbers" class="materialize-textarea" name="phonelist" id="phonelist"></textarea>
-                    <label for="phonelist" class="center-align">Emergency Contact List</label>
-                </div>
-                <div class="input-field col s12">
-                    <button type="submit" class="btn green">Add Details</button>
-                </div>
-            </form>
+            </form>            
         </div>
     </div>
     <div id="loc_modal" tabindex="-1" aria-hidden="true" class="modal fade">
