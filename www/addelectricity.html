@@ -134,7 +134,7 @@
                 {
                     if(navigator.connection.type!=Connection.NONE)
                     {                        
-                        $("#addcenter_but").attr("disabled","true");
+                        $("#addphase_but").attr("disabled","true");
                         
                         $.ajax({
                             type:"POST",
@@ -151,7 +151,7 @@
                                 {
                                     $("#phaseres").text(response.msg);
                                 }
-                                $("#addcenter_but").removeAttr("disabled");
+                                $("#addphase_but").removeAttr("disabled");
                                 window.setTimeout(function(){
                                     $("#phaseres").text('');
                                 },2000);
@@ -159,7 +159,7 @@
                             },
                             error:function(response,testStatus,jqXHR)
                             {
-                                $("#addcenter_but").removeAttr("disabled");
+                                $("#addphase_but").removeAttr("disabled");
                                 $("#phaseres").text("Server is not responding, try again...");
                                 window.setTimeout(function(){
                                     $("#phaseres").text('');
