@@ -378,45 +378,52 @@
                 var center=$.trim($("#center").val());
                 if(center!=="")
                 {
-                    cordova.plugins.locationAccuracy.canRequest(function(canRequest)
+                    if(navigator.connection.type!=Connection.NONE)
                     {
-                        if(canRequest)
+                        cordova.plugins.locationAccuracy.canRequest(function(canRequest)
                         {
-                            $("#loc_modal").modal('show');
-                            cordova.plugins.locationAccuracy.request(function(success)
+                            if(canRequest)
                             {
-                                $.getJSON("https://maps.googleapis.com/maps/api/geocode/json?address="+center+"&key=AIzaSyAA54a75rcCtPvuZvVJz9lq2fulSMSZIvc",function(response)
+                                $("#loc_modal").modal('show');
+                                cordova.plugins.locationAccuracy.request(function(success)
                                 {
-                                     var long=response.results[0].geometry.location.lng;
-                                     var lat=response.results[0].geometry.location.lat;
-                                    
-                                     localStorage.setItem("plong",long);
-                                     localStorage.setItem("plat",lat);
-                                    
-                                     $("#loc").val("long="+long+", lat="+lat);
-                                     $("#loc_modal").modal('hide');
-                                });
-                            },
-                            function(error)
-                            {
-                                if(error.code!=cordova.plugins.locationAccuracy.ERROR_USER_DISAGREED)
-                                {
-                                    if(window.confirm("Failed to automatically set Location Mode to 'High Accuracy'. Would you like to switch to the Location Settings page and do this manually?"))
+                                    $.getJSON("https://maps.googleapis.com/maps/api/geocode/json?address="+center+"&key=AIzaSyAA54a75rcCtPvuZvVJz9lq2fulSMSZIvc",function(response)
                                     {
-                                        cordova.plugins.diagnostic.switchToLocationSettings();
+                                         var long=response.results[0].geometry.location.lng;
+                                         var lat=response.results[0].geometry.location.lat;
+
+                                         localStorage.setItem("plong",long);
+                                         localStorage.setItem("plat",lat);
+
+                                         $("#loc").val("long="+long+", lat="+lat);
+                                         $("#loc_modal").modal('hide');
+                                    });
+                                },
+                                function(error)
+                                {
+                                    if(error.code!=cordova.plugins.locationAccuracy.ERROR_USER_DISAGREED)
+                                    {
+                                        if(window.confirm("Failed to automatically set Location Mode to 'High Accuracy'. Would you like to switch to the Location Settings page and do this manually?"))
+                                        {
+                                            cordova.plugins.diagnostic.switchToLocationSettings();
+                                        }
+                                        else
+                                        {
+                                            $("#loc_modal").modal('hide');
+                                        }
                                     }
                                     else
                                     {
                                         $("#loc_modal").modal('hide');
                                     }
-                                }
-                                else
-                                {
-                                    $("#loc_modal").modal('hide');
-                                }
-                            },cordova.plugins.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY);    
-                        }
-                    });
+                                },cordova.plugins.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY);    
+                            }
+                        });
+                    }
+                    else
+                    {
+                        navigator.notification.alert("Internet must to be proceed.",function(){ },"Warning","Ok");
+                    }
                 }
                 else
                 {

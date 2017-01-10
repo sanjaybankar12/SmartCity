@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<!--
+  * Please see the included README.md file for license terms and conditions.
+  -->
+<head>
+    <title>Blank Cordova Mobile App Project Template (Lite)</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+
+    <!-- see http://webdesign.tutsplus.com/tutorials/htmlcss-tutorials/quick-tip-dont-forget-the-viewport-meta-tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <style>
+        /* following two viewport lines are equivalent to the meta viewport statement above, needed for Windows */
+        /* see http://www.quirksmode.org/blog/archives/2014/05/html5_dev_conf.html and http://dev.w3.org/csswg/css-device-adapt/ */
+        @-ms-viewport { width: 100vw ; zoom: 100% ; }  @viewport { width: 100vw ; zoom: 100% ; }
+        @-ms-viewport { user-zoom: fixed ; }           @viewport { user-zoom: fixed ; }
+    </style>
+    <link href="css/icons.css" rel="stylesheet">
+     <link rel="stylesheet" href="css/materilize.css"/> <!-- materilize css lib file -->
+     <link rel="stylesheet" href="css/style.css"/> <!-- customecss lib file -->
+    <script src="cordova.js"></script>          <!-- phantom library, needed for Cordova api calls, added during build -->
+    <script src="js/app.js"></script>           <!-- recommended location of your JavaScript code relative to other JS files -->
+      <script src="js/jquery-2.1.1.js"></script>  
+      <script src="js/validation/jquery.validate.min.js"></script>  
+    <script src="js/materilize.js"></script>           <!-- materilize design lib file -->
+    <script src="xdk/init-dev.js"></script>     <!-- normalizes device and document ready events, see README for details -->
+    <script src="js/db.js"></script>       
+     
+    <script>
+        $(document).ready(function()
+        {
+            document.addEventListener("deviceready",onReady,false);
+            $(".button-collapse").sideNav();
+            $('select').material_select();
+            
+            $(".datepicker").pickadate({
+                format:'yyyy-mm-dd'
+            });
+
+            function onReady()
+            {
+                init_client();
+                    
+                document.addEventListener("backbutton",onBack,false);
+            }
+
+            function onBack()
+            {
+                window.location.href="home.html";
+                //navigator.notification.confirm("do you want to exit app?",onExit);
+            }
+            
+            function onExit(buttonIndex)
+            {
+                if(buttonIndex===1)
+                {
+                    navigator.app.exitApp();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            
+            $("#road_form").validate(
+            {
+                errorClass: 'validation-error', // so that it doesn't conflict with the error class of alert 
+                rules:
+                {
+                    name:
+                    {
+                        required:true
+                    },
+                    length:
+                    {
+                        required:true,
+                        number:true
+                    },
+                    mdate:
+                    {
+                        required:true
+                    },
+                    edate:
+                    {
+                        required:true
+                    },
+                    cost:
+                    {
+                        required:true,
+                        number:true
+                    }
+                    
+                },                
+                highlight: function(element) {
+                    $(element).closest('.space').addClass('has-error');
+                },
+                unhighlight: function(element) {
+                    $(element).closest('.space').removeClass('has-error');
+                },
+                errorElement: 'span',
+                     errorPlacement: function(error, element) {
+                 var placement = $(element).data('error');
+                 if(placement){
+                     $(placement).append(error);
+                 }
+                 else{
+                     error.insertAfter(element);
+                 }
+                },
+                messages:
+                {
+                    name:
+                    {
+                        required:" * Road name is required"
+                    },
+                    number:
+                    {
+                        required:"* Length is required",
+                        number:"* Length must be number"
+                    },                    
+                    mdate:
+                    {
+                        required:" * Manufacturing date is required"
+                    },
+                    edate:
+                    {
+                        required:"* Expiry date is required"
+                    },
+                    cost:
+                    {
+                        required:"* Cost of road is required",
+                        number:"* Cost must be number"
+                    }
+                }
+            });
+            
+            $.validator.addMethod("ispass",function(pass)
+            {
+                    var ispass=/^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$&])[0-9A-Za-z!@#$&]{8,}$/.test(pass); 
+                    return ispass;
+            },"* Password must be 8 character long, contains at least 1 Capital Alphabet,1 Lower Alphabet,1 Special Character");
+            
+             $.validator.addMethod("isMatch",function(cpass)
+            {
+                 var pass=$("#pass").val();
+                   return cpass==pass;
+            },"* Password is not match Found");
+            
+            $("#road_form").on('submit',function()
+            {
+                var name=$("#name").val();
+                var isname=$("#name").valid();
+                var length=$("#length").val();
+                var islength=$("#length").valid();
+                var mdate=$("#mdate").val();
+                var ismdate=$("#mdate").valid();
+                var edate=$("#edate").val();
+                var isedate=$("#edate").valid();
+                var cost=$("#cost").val();
+                var iscost=$("#cost").valid();
+                
+                if(isname && islength && ismdate && isedate && iscost)
+                {
+                    if(navigator.connection.type!==Connection.NONE)
+                    {
+                        $("#add_road_but").attr("disabled","true");
+                        $("#res").text('');
+                        $.ajax({
+                            type:"POST",                                                  url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/addroaddetails.php",
+                            data:{"name":name,"length":length,"mdate":mdate,"edate":edate,"cost":cost},
+                            dataType:"json",
+                            success:function(response,testStatus,jqXHR)
+                            {
+                                if(response.type=="success")
+                                {
+                                    $("#res").text(response.msg);
+                                    
+                                    $("#name").val('');
+                                    $("#length").val('');
+                                    $("#mdate").val('');
+                                    $("#edate").val('');
+                                    $("#cost").val('');
+                                }
+                                else
+                                {
+                                    $("#res").text(response.msg);
+                                }
+                                window.setTimeout(function(){
+                                    $("#res").text('');
+                                },2000);
+                                $("#add_road_but").removeAttr("disabled");
+                                return false;
+                            },
+                            error:function(response,testStatus,jqXHR)
+                            {
+                                $("#add_road_but").removeAttr("disabled");
+                                $("#res").text("Server is not responding,Try later");
+                                window.setTimeout(function(){
+                                    $("#res").text('');
+                                },2000);
+                                return false;
+                            }
+                        });
+                        return false;
+                    }
+                    else
+                    {
+                        navigator.notification.alert("Internet must to be procceed",function(){ },"Warning","OK");
+                        return false;
+                    }
+                    return false;
+                }
+                return false;
+            });
+         
+            $("#roadlist").click(function()
+            {
+                if(navigator.connection.type!==Connection.NONE)
+                {
+                    $.getJSON("http://www.sanjaybankar.co.in/ieeeprojects/smartcity/getroadlist.php",function(response)
+                    {
+                        var rdarr=response.namelist;
+                        $("#tab").children("tr").remove();
+                        $.each(rdarr,function(idx)
+                        {
+                            var rw="<tr><td>"+rdarr[idx]+"</td></tr>";
+                            $("#tab").append(rw);
+                            
+                        });
+                        
+                        $("#road_form").slideUp('slow');
+                        $("#roadlist_cvr").slideDown('slow');
+                    }); 
+                }
+                else
+                {
+                    navigator.notification.alert("Internet must to be procceed",function(){ },"Warning","OK");
+                    return false;
+                }
+                
+            });
+            
+            $("#roadcvr_but").click(function()
+            {
+                $("#roadlist_cvr").slideUp('slow');
+                $("#road_form").slideDown('slow');
+            });
+            
+        });
+    </script>
+    <style>
+        #header .nav-wrapper
+        {
+            background-color: royalblue;
+        }
+        #slide-out li a
+        {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        #name,#length,#mdate,#edate,#cost
+        {
+            margin-bottom: 8px;
+        }
+        .mid_cvr
+        {
+            text-align: center;
+            color: #fff;
+            
+        }
+        .mid_cvr h3
+        {
+            font-size: 20px;
+        }
+        .margin
+        {
+            margin-bottom: 0;
+        }
+       .head
+        {
+            text-align: center;
+            margin: 5% auto 2% auto;
+        }
+        .head h5
+        {
+            color: #fff;
+            font-size: 20px;
+        }
+        
+        #res
+        {
+            color: #fff;
+            text-align: center;
+        }
+        
+        #roadlist
+        {
+            font-weight: bold;
+            font-size: 16px;
+            color: royalblue;
+            cursor: pointer;
+        }
+        
+        table
+        {
+            background-color: #fff;    
+        }
+        
+        table tr th
+        {
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        table tr td
+        {
+            text-align: center;
+            font-size: 15px;
+        }
+        
+        #roadlist_cvr
+        {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+   <div class="hm_cvr">
+        <div id="header">
+            <div class="navbar-fixed red">
+                <nav>
+                  <div class="nav-wrapper">
+                    <a href="#" data-activates="slide-out" class="button-collapse white-text nav-btn">
+                        <i class="mdi-navigation-menu"></i>
+                      </a>
+                    <h2 class="head-title">Smart City&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+                  </div>
+                </nav>
+          </div>
+        </div>
+        <ul id="slide-out" class="side-nav">
+            <li style="background-color:red; ">
+                <a style="font-size:20px; color:#fff" href="home.html">Smart City</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li>
+                <span><i style="float:left;" class="mdi-social-person-outline small"></i></span>
+                <a id="uid" href="#!"></a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvroad">
+                <i style="float:left;" class="mdi-navigation-fullscreen-exit small"></i>
+                <a href="#!">Road</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvwater">
+                <i style="float:left;" class="mdi-editor-format-color-fill small"></i>
+                <a href="#!">Water</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvelectricity">
+                <i style="float:left;" class="mdi-image-wb-incandescent small"></i>
+                <a href="#!">Electricity</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvgarbage">
+                <i style="float:left;" class="mdi-action-shopping-cart small"></i>
+                <a href="#!">Garbage</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="newsfeed">
+                <i style="float:left;" class="mdi-editor-format-list-bulleted small"></i>
+                <a href="news.html">News Feed</a>
+            </li>
+        </ul>         
+        
+    </div>
+    
+<div id="road_page" class="row no-margin">    
+   <div class="col s12  ">
+      <form id="road_form" class="login-form">
+        <div class="head">
+          <h5>Road Details</h5>
+        </div>
+          <div id="res"></div>
+        <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-navigation-fullscreen-exit prefix"></i>
+            <input id="name" name="name" type="text">
+            <label for="name" class="center-align">Name</label>
+          </div>
+        </div>
+         <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-editor-border-color prefix"></i>
+            <input id="length" name="length" type="text">
+            <label for="length" class="center-align">Length(in KM)</label>
+          </div>
+        </div>
+        <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-action-assignment prefix"></i>
+            <input id="mdate" class="datepicker" name="mdate" type="text">
+            <label for="mdate">Manufacture Date</label>
+          </div>
+        </div>        
+         <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-action-assignment prefix"></i>
+            <input id="edate" class="datepicker" name="edate" type="text">
+            <label for="edate">Expiry Date</label>
+          </div>
+        </div> 
+         <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-editor-attach-money prefix"></i>
+            <input id="cost" name="cost" type="text">
+            <label for="cost">Cost(in INR)</label>
+          </div>
+        </div> 
+          <div class="row">
+          </div>
+        <div  class="row">
+          <div style="text-align:center; margin-top:0;" class="input-field col s12 center">
+              <button id="add_road_but" class="btn green" type="submit"  name="action">Add Road Details</button>              
+          </div>
+          <div  class="row">
+          <div style="text-align:center; padding:6px; background-color:#fff; margin-top:20px;" class="input-field col s12 center">
+              <a id="roadlist" type="submit"  name="action">See Road List</a>
+          </div>
+        </div>
+        </div>
+      </form>
+       <div id="roadlist_cvr">
+            <div class="head">
+                <h5>Road List</h5>
+            </div>
+           <table class="table-bordered table-centered">
+               <thead>
+                   <tr>
+                        <th>Road Names</th>
+                   </tr>
+               </thead> 
+               <tbody id="tab">
+               
+               </tbody>
+           </table>
+           <div class="row">
+               <div style="text-align:center; margin-top:20px;" class="input-field col s12 center">
+                  <button id="roadcvr_but" class="btn green" type="submit"  name="action">Back to add Details</button>
+              </div>
+           </div>
+       </div>
+    </div>
+	   
+    </div>
+ 
+</body>
+</html>

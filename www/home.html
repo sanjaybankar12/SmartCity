@@ -66,7 +66,7 @@
                 }
                 else if(seltype==2)
                 {
-                    window.location.href="menu.html";
+                    window.location.href="addroad.html";
                 }
             });
             
@@ -108,14 +108,22 @@
                 }
                 else if(seltype==2)
                 {
-                    window.location.href="menu.html";
+                    window.location.href="addgarbage.html";
                 }
             });
             
              $("#nvroad").click(function()
             {
-                sessionStorage.setItem("cat","road");  
-                window.location.href="menu.html";
+                sessionStorage.setItem("cat","road"); 
+                var seltype= sessionStorage.getItem("seltype");
+                if(seltype==0)
+                {
+                    window.location.href="menu.html";
+                }
+                else if(seltype==2)
+                {
+                    window.location.href="addroad.html";
+                }
             });
             
             $("#nvwater").click(function()
@@ -149,7 +157,15 @@
             $("#nvgarbage").click(function()
             {
                 sessionStorage.setItem("cat","garbage");  
-                window.location.href="menu.html";
+                var seltype= sessionStorage.getItem("seltype");
+                if(seltype==0)
+                {
+                    window.location.href="menu.html";
+                }
+                else if(seltype==2)
+                {
+                    window.location.href="addgarbage.html";
+                }
             });
             
         });

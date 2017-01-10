@@ -29,6 +29,8 @@
         {
             document.addEventListener("deviceready",onReady,false);
             $(".button-collapse").sideNav();
+            $("select").material_select();
+            
             
             function onReady()
             {                
@@ -230,6 +232,13 @@
     
     <div class="mid_cvr">
         <div class="row">
+            <h3>Garbage Collection Location</h3>
+            <div class="adrcvr">
+               <select id="garlocid">
+                </select>
+            </div>
+        </div>
+        <div class="row">
             <h3>Garbage Collection Timing</h3>
            <table class="centered highlight bordered striped">
                 <tr>
@@ -242,18 +251,7 @@
                </tr>
             </table>
         </div>
-        <div class="row">
-            <h3>Garbage Collection Location</h3>
-            <div class="adrcvr">
-                <ul>
-                    <li>Chandannagar</li>
-                    <li>
-                        <div class="divider"></div>
-                    </li>
-                    <li>Pune</li>
-                </ul>
-            </div>
-        </div>
+        
         <div class="row">
             <h3>Emergency Contact Details</h3>
             <div class="ctcvr">
