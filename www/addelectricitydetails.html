@@ -37,8 +37,8 @@
             {                
                 navigator.splashscreen.hide();
                 init_client();
+               
                 document.addEventListener("backbutton",onBack,false);
-                
                 document.getElementById("uid").textContent=sessionStorage.getItem("uname");
             }
 
@@ -46,15 +46,9 @@
             {
                // var cat=sessionStorage.getItem("cat")+".html";
                 var ele=sessionStorage.getItem("ele_samepg"); 
-                if(ele=="yes")
-                {
-                    sessionStorage.setItem("ele_samepg","no");
-                    window.location.href="addelectricity.html";
-                }
-                else
-                {
-                    window.location.href="home.html";
-                }
+                    
+                window.location.href="addelectricity.html";
+               
                 //navigator.notification.confirm("Do you want to exit app?",onExit);
             }
             
@@ -69,31 +63,31 @@
                 {
                     return false;
                 }
-            }                                    
+            }                
             
             $("#ele_form").validate({
                 
                 errorClass:"validation-error",
                 rules:
                 {
-                    center:
+                    status:
                     {
                         required:true
                     },
-                    loc:
+                    phonelist:
                     {
                         required:true
                     }
                 },
                 messages:
                 {
-                    center:
+                    status:
                     {
-                        required:"* Enter payment center."
+                        required:"* Enter status of electricity."
                     },
-                    loc:
+                    phonelist:
                     {
-                        required:"* Click to add location."
+                        required:"* Enter emergency contact list."
                     }
                 },
                 highlight:function(element)
@@ -120,49 +114,53 @@
                 
             });
             
+            
             $("#ele_form").on('submit',function()
             {
-                var center=$("#center").val();
-                var iscenter=$("#center").valid();
-                var loc=$("#loc").val();
-                var isloc=$("#loc").valid();
+                var status=$("#status").val();
+                var isstatus=$("#status").valid();
+                var phonelist=$("#phonelist").val();
+                var isphonelist=$("#phonelist").valid();
                 
-                $("payres").text('');
-                if(iscenter && isloc)
+                var wardlist=$("#wardlist").val();
+                var centerlist=$("#centerlist").val();
+                                
+                $("#res").text('');
+                                
+                if(isstatus && isphonelist && wardlist!=null && centerlist!=null)
                 {
                     if(navigator.connection.type!=Connection.NONE)
                     {
-                        var long=localStorage.getItem("plong");
-                        var lat=localStorage.getItem("plat");
                         
-                        $("#addcenter_but").attr("disabled","true");
+                        $("#add_ele_dets_but").attr("disabled","true");
                         
                         $.ajax({
-                            type:"POST",                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/addpaycenter.php",
-                            data:{"center":center,"long":long,"lat":lat},
+                            type:"POST",                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/addelectricdetails.php",
+                            data:{"centerlist":centerlist,"wardlist":wardlist,"status":status,"phonelist":phonelist},
                             dataType:"json",
                             success:function(response,testStatus,jqXHR)
                             {
                                 if(response.type=="success")
                                 {
-                                    $("payres").text(response.msg);
+                                    $("#res").text(response.msg);
                                 }
                                 else
                                 {
-                                    $("payres").text(response.msg);
+                                    $("#res").text(response.msg);
                                 }
-                                $("#addcenter_but").removeAttr("disabled");
+                                $("#add_ele_dets_but").removeAttr("disabled");
                                 window.setTimeout(function(){
-                                    $("payres").text('');
+                                    $("#res").text('');
+                                    window.location.href="addelectricity.html";
                                 },2000);
                                 return false;
                             },
                             error:function(response,testStatus,jqXHR)
                             {
-                                $("#addcenter_but").removeAttr("disabled");
-                                $("payres").text("Server is not responding, try again...");
+                                $("#add_ele_dets_but").removeAttr("disabled");
+                                $("#res").text("Server is not responding, try again...");
                                 window.setTimeout(function(){
-                                    $("payres").text('');
+                                    $("#res").text('');
                                 },2000);
                                return false; 
                             }
@@ -174,6 +172,20 @@
                         navigator.notification.alert("Internet must to be proceed.",function(){ },"Warning","Ok");
                         return false;
                     }
+                }
+                else
+                {
+                    if(wardlist==null)
+                    {
+                        navigator.notification.alert("Select wards list.",function(){ },"Warning","Ok");
+                        return false;   
+                    }
+                    else if(centerlist==null)
+                    {
+                        navigator.notification.alert("Select Payment centers.",function(){ },"Warning","Ok");
+                        return false; 
+                    }
+                    
                 }
                 
                 return false;
@@ -244,10 +256,14 @@
             margin: 2% auto;
         }
         
-        #ele_form 
+        #phonelist
         {
-            
-        }               
+            margin-bottom: 0;
+        }         
+        #status
+        {
+            margin-bottom: 5px;
+        }
         
     </style>
 </head>
@@ -322,14 +338,13 @@
              <div id="res"></div> 
                 <div style="text-align: left;" class="input-field col s12">
                     <i class="mdi-social-location-city prefix"></i>
-                    <select name="wardlist" id="wardlist" >
-                        <option>dddd</option>
+                    <select name="wardlist" multiple id="wardlist" >
                     </select>
                     <label for="wardlist" class="center-align">Select Wards</label>
                 </div>
                 <div style="text-align: left;" class="input-field col s12">
                     <i class="mdi-social-domain prefix"></i>
-                    <select name="centerlist" id="centerlist" ></select>
+                    <select name="centerlist" multiple id="centerlist" ></select>
                     <label for="centerlist" class="center-align">Select Payment Center</label>
                 </div>
                 <div class="input-field col s12">
@@ -337,17 +352,46 @@
                     <input type="text" placeholder="Status" name="status" id="status" />
                     <label for="status" class="center-align">Electricity Status</label>
                 </div>
-                <div class="input-field col s12">
+                <div style="margin-top:25px;" class="input-field col s12">
                     <i class="mdi-communication-call prefix"></i>
                     <textarea placeholder="comma seperated numbers" class="materialize-textarea" name="phonelist" id="phonelist"></textarea>
                     <label for="phonelist" class="center-align">Emergency Contact List</label>
                 </div>
                 <div class="input-field col s12">
-                    <button type="submit" class="btn green">Add Details</button>
+                    <button type="submit" id="add_ele_dets_but" class="btn green">Add Details</button>
                 </div>
             </form>
         </div>
     </div>
+    <script>
+        var wardidarr=JSON.parse(sessionStorage.getItem("wardidobj"));
+        var wardnamearr=JSON.parse(sessionStorage.getItem("wardnameobj"));
+        var payctridarr=JSON.parse(sessionStorage.getItem("payctridobj"));
+        var payctrnamearr=JSON.parse(sessionStorage.getItem("payctrnameobj"));
+                  
+        setData(wardidarr,wardnamearr,payctridarr,payctrnamearr);
+        function setData(wardidarr,wardnamearr,payctridarr,payctrnamearr)
+        {
+            for(var i=0;i<wardidarr.length;i++)
+            {
+                var opt=document.createElement("option");
+                opt.text=wardnamearr[i];
+                opt.value=wardidarr[i];
+                            
+                $("#wardlist").append(opt);
+            }
+                        
+            for(var i=0;i<payctridarr.length;i++)
+            {
+                var opt=document.createElement("option");
+                opt.text=payctrnamearr[i];
+                opt.value=payctridarr[i];
+                                                
+                $("#centerlist").append(opt);
+            }
+                            
+        }
     
+    </script>
 </body>
 </html>

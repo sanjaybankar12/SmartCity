@@ -84,18 +84,22 @@
                     },
                     phase:
                     {
-                        required:true
+                        required:true,
+                        number:true,
+                        isphase:true
                     }
                 },
                 messages:
                 {
                     ward:
                     {
-                        required:"* Enter payment center."
+                        required:"* Enter ward name."
                     },
                     phase:
                     {
-                        required:"* Click to add location."
+                        required:"* Enter phase of electricity.",
+                        number:"* Phase must be number.",
+                        isphase:"* Phase is not more than 3."
                     }
                 },
                 highlight:function(element)
@@ -122,6 +126,11 @@
                 
             });
             
+            $.validator.addMethod("isphase",function(phase)
+            {
+                return +phase<=3;
+            });
+            
             $("#phase_form").on('submit',function()
             {
                 var ward=$("#ward").val();
@@ -146,6 +155,8 @@
                                 if(response.type=="success")
                                 {
                                     $("#phaseres").text(response.msg);
+                                    $("#ward").val('');
+                                    $("#phase").val('');
                                 }
                                 else
                                 {
@@ -246,8 +257,7 @@
                         $("#addcenter_but").attr("disabled","true");
                         
                         $.ajax({
-                            type:"POST",
-                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/addpaycenter.php",
+                            type:"POST",                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/addpaycenter.php",
                             data:{"center":center,"long":long,"lat":lat},
                             dataType:"json",
                             success:function(response,testStatus,jqXHR)
@@ -321,9 +331,40 @@
             
             $("#add_ele_but").click(function()
             {
-                sessionStorage.setItem("ele_samepg","no");  
-                window.location.href="addelectricitydetails.html";
+                if(navigator.connection.type!=Connection.NONE)
+                {
+                    getWardsPayCtrList();                                        
+                }
+                else
+                {
+                    navigator.notification.alert("Internet must to be proceed.",function(){ },"Warning","Ok");
+
+                }
             });
+            
+            function getWardsPayCtrList()
+            {
+                $.ajax({
+                    type:"POST",                    url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/getwardpayctrlist.php",
+                    dataType:"json",
+                    success:function(response,testStatus,jqXHR)
+                    {              
+                       
+                        sessionStorage.setItem("ele_samepg","no");  
+                        sessionStorage.setItem("wardidobj",JSON.stringify(response.wardidarr));
+                        sessionStorage.setItem("wardnameobj",JSON.stringify(response.wardnamearr));
+                        sessionStorage.setItem("payctridobj",JSON.stringify(response.payctridarr));
+                        sessionStorage.setItem("payctrnameobj",JSON.stringify(response.payctrnamearr));
+                        
+                        window.location.href="addelectricitydetails.html";
+                        
+                    },
+                    error:function(response,testStatus,jqXHR)
+                    {
+                        
+                    }
+                });
+            }
             
             $("#add_payctr_but").click(function()
             {
