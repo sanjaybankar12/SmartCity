@@ -160,7 +160,10 @@
             background-color:cornflowerblue;
             padding: 10px;
         }
-        
+        #phonelist_cvr i
+        {
+            float: left;
+        }
     </style>
 </head>
 
@@ -233,33 +236,55 @@
            <table class="centered highlight bordered striped">
                 <tr>
                     <td>Morning</td>
-                    <td><span id="mfrom">09:00 AM</span>&nbsp;-&nbsp;<span id="mto">11:00</span>AM</td>
+                    <td><span id="mfrom"></span>&nbsp;-&nbsp;<span id="mto"></span></td>
                </tr>
                <tr>
                     <td>Evening</td>
-                    <td><span id="efrom">09:00 AM</span>&nbsp;-&nbsp;<span id="eto">11:00</span>AM</td>
+                    <td><span id="efrom"></span>&nbsp;-&nbsp;<span id="eto"></span></td>
                </tr>
             </table>
         </div>
         <div class="row">
             <h3>Pumping Station Address</h3>
             <div class="adrcvr">
-                <span>Chandannagar</span>
+                <span id="paddr"></span>
             </div>
         </div>
         <div class="row">
             <h3>Emergency Contact Details</h3>
-            <div class="ctcvr">
-                <div class="mobcvr">
-                    <i style="float:left;" class="mdi-communication-call"></i>
-                    +91<span>9561542499</span>
-                </div>
-                <div class="mobcvr">
-                    <i style="float:left;" class="mdi-communication-call"></i>
-                    <span>121</span>
-                </div>
+            <div id="phonelist_cvr" class="ctcvr">
+                
+                
             </div>
         </div>
     </div>
+    <script>
+        var waterarr=JSON.parse(localStorage.getItem("waterarr"));
+        document.getElementById("mfrom").textContent=waterarr[0];
+        document.getElementById("mto").textContent=waterarr[1];
+        document.getElementById("efrom").textContent=waterarr[2];
+        document.getElementById("eto").textContent=waterarr[3];
+        document.getElementById("paddr").textContent=waterarr[4];
+        
+        var phonelist= document.getElementById("eto").textContent=waterarr[5];
+        var phonearr=phonelist.split(',');
+        
+        for(var i=0;i<phonearr.length;i++)
+        {
+            var div=document.createElement("div");
+            div.className="mobcvr";
+            
+            var itag=document.createElement("i");
+            itag.className="mdi-communication-call";
+            var span=document.createElement("span");
+            span.textContent=phonearr[i];
+            
+            div.appendChild(itag);
+            div.appendChild(span);
+            
+            document.getElementById("phonelist_cvr").appendChild(div);;
+        }
+    
+    </script>
 </body>
 </html>

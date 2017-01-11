@@ -183,11 +183,26 @@
                                     sessionStorage.setItem("email",userarr[2]);
                                     sessionStorage.setItem("phone",userarr[3]);
                                     
-                                    window.location.href="home.html";
+                                    if(userarr[0]==0)
+                                    {
+                                        var waterarr=response.waterarr;
+                                        var roadarr=response.roadarr;
+                                        localStorage.setItem("waterarr",JSON.stringify(waterarr));
+                                        localStorage.setItem("roadarr",JSON.stringify(roadarr));
+                                        window.location.href="home.html";
+                                    }
+                                    else if(userarr[0]==1)
+                                    {
+                                        window.location.href="home.html";
+                                    }
+                                    else if(userarr[0]==2)
+                                    {
+                                        window.location.href="home.html";
+                                    }
                                 }
                                 else
                                 {
-                                     navigator.notification.alert("Invalid Username or Password",function(){ },"Warning","Ok");
+                                     navigator.notification.alert("Invalid Username or Password.",function(){ },"Warning","Ok");
                                 }
                                 
                                 return false;

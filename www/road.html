@@ -40,6 +40,25 @@
                 document.addEventListener("backbutton",onBack,false);
                 
                 document.getElementById("uid").textContent=sessionStorage.getItem("uname");
+                
+                var roadarr=JSON.parse(localStorage.getItem("roadarr"));
+
+                for(var i=0;i<roadarr.length;i++)
+                {
+                    var td=document.createElement("td");
+                    
+                    td.textContent=roadarr[i][0];
+                    var tr=document.createElement("tr");
+                    
+                    var input=document.createElement("input");
+                    input.type="hidden";
+                    input.value=i;
+                    
+                    tr.appendChild(input);
+                    tr.appendChild(td);
+                    
+                    document.getElementById("roadlist").appendChild(tr);
+                }
             }
 
             function onBack()
@@ -86,9 +105,21 @@
                 window.location.href="menu.html";
             });
             
-            $("#roadlist").click(function()
+            $("#roadlist").on("click","tr",function()
             {
+                var idx=$(this).children("input").val();
+                
+                var roadarr=JSON.parse(localStorage.getItem("roadarr"));
+                
+                $("#tname").text(roadarr[idx][0]);
+                $("#tlength").text(roadarr[idx][1]+" km");
+                $("#tmdate").text(roadarr[idx][2]);
+                $("#tedate").text(roadarr[idx][3]);
+                $("#tcost").text(roadarr[idx][4]+" INR");
+                
                 $("#road_modal").modal('show');
+                
+                return false;
             });
             
         });
@@ -139,6 +170,12 @@
         {
             width: 100%;
             height: 280px;
+        }
+        
+        table tr th
+        {
+            background-color: #000;
+            color: #fff;
         }
                 
     </style>
@@ -207,8 +244,8 @@
         </ul>       
     </div>
     <div class="mid_cvr">
+        <div class="row"></div>
         <div class="row">
-            <h3>Road Details</h3>
            <table class="centered highlight bordered striped">                
                <thead>
                     <tr>
@@ -216,12 +253,11 @@
                    </tr>
                </thead>
                <tbody id="roadlist">
-                <tr><td>ddddd</td></tr>
                </tbody>
             </table>
         </div>
         <div class="row">
-            <h3>Wagholi Map</h3>
+            <h3>Road Map</h3>
             <div class="adrcvr">
                 <iframe id="mapid" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAzc8BNhDsZKzv_eEviwTNQS0oUyBHBEn4&q=Wagholi+Pune,MH" allowfullscreen></iframe>
             </div>
@@ -240,28 +276,29 @@
                     <table class="table table-bordered table-strippe"> 
                         <tr>
                             <td>Name</td>
-                            <td></td>
+                            <td id="tname"></td>
                         </tr>
                         <tr>
                             <td>Length</td>
-                            <td></td>
+                            <td id="tlength"></td>
                         </tr>
                         <tr>
                             <td>Manufacture Date</td>
-                            <td></td>
+                            <td id="tmdate"></td>
                         </tr>
                         <tr>
                             <td>Expiry Date</td>
-                            <td></td>
+                            <td id="tedate"></td>
                         </tr>
                         <tr>
                             <td>Cost of Road</td>
-                            <td></td>
+                            <td id="tcost"></td>
                         </tr>
                     </table>
                 </div>                
             </div>
         </div>
     </div>
+    
 </body>
 </html>
