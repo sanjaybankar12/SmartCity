@@ -42,6 +42,8 @@
                 init_client();
                     
                 document.addEventListener("backbutton",onBack,false);
+                
+                document.getElementById("uid").textContent=sessionStorage.getItem("uname");
             }
 
             function onBack()
@@ -245,6 +247,30 @@
             {
                 $("#roadlist_cvr").slideUp('slow');
                 $("#road_form").slideDown('slow');
+            });
+            
+            $("#nvroad").click(function()
+            {
+                sessionStorage.setItem("cat","road");  
+                window.location.href="addroad.html";
+            });
+            
+            $("#nvwater").click(function()
+            {
+                sessionStorage.setItem("cat","water");  
+                window.location.href="addwater.html";
+            });
+            
+            $("#nvelectricity").click(function()
+            {
+                sessionStorage.setItem("cat","electricity");  
+                window.location.href="addelectricity.html";
+            });
+            
+            $("#nvgarbage").click(function()
+            {
+                sessionStorage.setItem("cat","garbage");  
+                window.location.href="addgarbage.html";
             });
             
         });

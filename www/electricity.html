@@ -41,7 +41,8 @@
 
             function onBack()
             {
-                 window.location.href="home.html";
+                 var cat=sessionStorage.getItem("cat")+".html";
+                 window.location.href="menu.html";
                 //navigator.notification.confirm("Do you want to exit app?",onExit);
             }
             

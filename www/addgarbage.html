@@ -180,21 +180,25 @@
                 var isevenmfrm=$("#evenmfrm").valid();
                 var evenmto=$("#evenmto").val();
                 var isevenmto=$("#evenmto").valid();
-                var pumpaddr=$("#pumpaddr").val();
-                var ispumpaddr=$("#pumpaddr").valid();
-                var phonelist=$("#phonelist").val();
-                var isphonelist=$("#phonelist").valid();
                 
-                if(ismornmfrm && ismornmto && isevenmfrm && isevenmto && ispumpaddr && isphonelist)
-                {
+                var gloc=$("#gloc").val();
+                var isgloc=$("#gloc").valid();
+                var phone=$("#phone").val();
+                var isphone=$("#phone").valid();
+                var gpos=$("#gpos").val();
+                var isgpos=$("#gpos").valid();
+                
+                $("#res").text('');
+                if(ismornmfrm && ismornmto && isevenmfrm && isevenmto && isgloc && isphone && isgpos)
+                {                    
                     if(navigator.connection.type!==Connection.NONE)
                     {
-                        $("#addwaterid").text("Plz wait..");
-                        $("#addwaterid").attr("disabled","true");
-                        
+                        $("#addgarbageid").attr("disabled","true");
+                        var longitude=localStorage.getItem("glong");
+                        var latitude=localStorage.getItem("glat");
                         $.ajax({
-                            type:"POST",                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/addwater.php",
-                            data:{"mornmfrm":mornmfrm,"mornmto":mornmto,"evenmfrm":evenmfrm,"evenmto":evenmto,"pumpaddr":pumpaddr,"phonelist":phonelist},
+                            type:"POST",                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/addgarbage.php",
+                            data:{"mornmfrm":mornmfrm,"mornmto":mornmto,"evenmfrm":evenmfrm,"evenmto":evenmto,"gloc":gloc,"phone":phone,"long":longitude,"lat":latitude},
                             dataType:"json",
                             success:function(response,testStatus,jqXHR)
                             {
@@ -202,12 +206,13 @@
                                 {
                                     $("#res").text(response.msg);
                                     
-                                    $("#mornmfrm").val("07:00");
-                                    $("#mornmto").val("09:00");
-                                    $("#evenmfrm").val("16:00");
-                                    $("#evenmto").val("18:00");
-                                    $("#pumpaddr").val("");
-                                    $("#phonelist").val("");
+                                    $("#mornmfrm").val("06:00");
+                                    $("#mornmto").val("08:00");
+                                    $("#evenmfrm").val("18:00");
+                                    $("#evenmto").val("20:00");
+                                    $("#gloc").val("");
+                                    $("#phone").val("");
+                                    $("#gpos").val("");
                                     
                                     window.setTimeout(function(){
                                         $("#res").text("");
@@ -220,15 +225,13 @@
                                         $("#res").text("");
                                     },3000);
                                 }
-                                $("#addwaterid").text("Add Details");
-                                $("#addwaterid").removeAttr("disabled");
+                                $("#addgarbageid").removeAttr("disabled");
                                 return false;
                             },
                             error:function(response,testStatus,jqXHR)
                             {
-                                 $("#res").text("Server is not responding, try again...");
-                                $("#addwaterid").text("Add Details");
-                                $("#addwaterid").removeAttr("disabled");
+                                $("#res").text("Server is not responding, try again...");
+                                $("#addgarbageid").removeAttr("disabled");
                                 $("#res").text(response.msg);
                                      window.setTimeout(function(){
                                         $("#res").text("");
@@ -255,28 +258,28 @@
             $("#nvroad").click(function()
             {
                 sessionStorage.setItem("cat","road");  
-                window.location.href="home.html";
+                window.location.href="addroad.html";
             });
             
             $("#nvwater").click(function()
             {
                 sessionStorage.setItem("cat","water");  
-                window.location.href="home.html";
+                window.location.href="addwater.html";
             });
             
             $("#nvelectricity").click(function()
             {
                 sessionStorage.setItem("cat","electricity");  
-                window.location.href="home.html";
+                window.location.href="addelectricity.html";
             });
             
             $("#nvgarbage").click(function()
             {
                 sessionStorage.setItem("cat","garbage");  
-                window.location.href="home.html";
+                window.location.href="addgarbage.html";
             });
             
-            $("#gpos").click(function()
+            $("#gpos").focusin(function()
             {
                 var gloc=$.trim($("#gloc").val());
                 if(gloc!=="")
@@ -290,13 +293,13 @@
                                 $("#loc_modal").modal('show');
                                 cordova.plugins.locationAccuracy.request(function(success)
                                 {
-                                    $.getJSON("https://maps.googleapis.com/maps/api/geocode/json?address="+center+"&key=AIzaSyAA54a75rcCtPvuZvVJz9lq2fulSMSZIvc",function(response)
+                                    $.getJSON("https://maps.googleapis.com/maps/api/geocode/json?address="+gloc+"&key=AIzaSyAA54a75rcCtPvuZvVJz9lq2fulSMSZIvc",function(response)
                                     {
                                          var long=response.results[0].geometry.location.lng;
                                          var lat=response.results[0].geometry.location.lat;
 
-                                         localStorage.setItem("plong",long);
-                                         localStorage.setItem("plat",lat);
+                                         localStorage.setItem("glong",long);
+                                         localStorage.setItem("glat",lat);
 
                                          $("#gpos").val("long="+long+", lat="+lat);
                                          $("#loc_modal").modal('hide');
@@ -453,7 +456,7 @@
              <div id="res"></div>
             <div class="input-field col s12">
                 <i class="mdi-action-room prefix"></i>
-                <input type="text" name="gloc" id="gloc"/>
+                <input type="text" placeholder="Location" name="gloc" id="gloc"/>
                 <label for="gloc" class="center-align">Garbage Location</label>
              </div>
              <div class="input-field col s6">
@@ -475,12 +478,12 @@
             
             <div class="input-field col s12">
                 <i class="mdi-communication-call prefix"></i>
-                <input name="phone" type="text" id="phone"/>
+                <input name="phone" placeholder="Your Phone" type="text" id="phone"/>
                 <label for="phone" class="center-align">Phone</label>
              </div>
              <div class="input-field col s12">
                 <i class="mdi-action-room prefix"></i>
-                <input name="gpos" type="text" id="gpos"/>
+                <input name="gpos" placeholder="Click to add location" type="text" id="gpos"/>
                 <label for="gpos" class="center-align">GPS Location</label>
              </div>
             <div class="row"></div>
