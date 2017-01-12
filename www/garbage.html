@@ -38,7 +38,7 @@
                 init_client();
                 document.addEventListener("backbutton",onBack,false);
                 
-                document.getElementById("uid").textContent=sessionStorage.getItem("uname");
+                document.getElementById("uid").textContent=sessionStorage.getItem("uname");                                
             }
 
             function onBack()
@@ -85,10 +85,8 @@
                 window.location.href="menu.html";
             });
             
-            $(".mobcvr").click(function()
+            $("#phonelist_cvr").on("click",".mobcvr",function()
             {
-                
-                
                 var number=$(this).children('span').text();
                 
                 navigator.notification.confirm("Do you want to call on "+number+"?",function(buttonIndex){
@@ -102,6 +100,38 @@
                     }
                     
                 },"Confirm",["Yes","No"]);                                
+                
+            });
+            
+            $("#garlocid").change(function()
+            {
+                var idx=$(this).val();
+                var garbagearr=JSON.parse(localStorage.getItem("garbagearr"));
+                
+                $("#mfrom").text(garbagearr[idx][0]);
+                $("#mto").text(garbagearr[idx][1]);
+                $("#efrom").text(garbagearr[idx][2]);
+                $("#eto").text(garbagearr[idx][3]);
+                
+                var phonelist=garbagearr[idx][5];
+                var phonearr=phonelist.split(',');
+
+                $("#phonelist_cvr").children("div").remove();
+                for(var i=0;i<phonearr.length;i++)
+                {
+                    var div=document.createElement("div");
+                    div.className="mobcvr";
+
+                    var itag=document.createElement("i");
+                    itag.className="mdi-communication-call";
+                    var span=document.createElement("span");
+                    span.textContent=phonearr[i];
+
+                    div.appendChild(itag);
+                    div.appendChild(span);
+
+                    document.getElementById("phonelist_cvr").appendChild(div);;
+                }
                 
             });
             
@@ -119,13 +149,15 @@
         }
          .mid_cvr
         {
-            text-align: center;
             color: #fff;
+            margin: 0 auto;
+            width: 90%;
             
         }
         .mid_cvr h3
         {
             font-size: 20px;
+            text-align: center;
         }
         
         table,.ctcvr
@@ -140,8 +172,6 @@
         
         .adrcvr
         {
-            background-color: #fff;
-            color: #000;
             font-weight: bold;
             font-size: 18px;
             width: 96%;
@@ -162,9 +192,17 @@
         {
             margin: 5px;
             background-color:cornflowerblue;
+            text-align: center;
             padding: 10px;
         }
-        
+        .mobcvr i
+        {
+            float: left;
+        }
+        #garlocid 
+        {
+            color: #000;
+        }
     </style>
 </head>
 
@@ -234,9 +272,10 @@
     <div class="mid_cvr">
         <div class="row">
             <h3>Garbage Collection Location</h3>
-            <div class="adrcvr">
-               <select id="garlocid">
-                </select>
+            <div class="input-field col s12 adrcvr">
+                <i style="float:left;" class="mdi-maps-place prefix"></i>
+                <select id="garlocid"></select>
+                <label for="garlocid" class="center-align">Location</label>
             </div>
         </div>
         <div class="row">
@@ -244,29 +283,33 @@
            <table class="centered highlight bordered striped">
                 <tr>
                     <td>Morning</td>
-                    <td><span id="mfrom">09:00 AM</span>&nbsp;-&nbsp;<span id="mto">11:00</span>AM</td>
+                    <td><span id="mfrom"></span>&nbsp;-&nbsp;<span id="mto"></span></td>
                </tr>
                <tr>
                     <td>Evening</td>
-                    <td><span id="efrom">09:00 AM</span>&nbsp;-&nbsp;<span id="eto">11:00</span>AM</td>
+                    <td><span id="efrom"></span>&nbsp;-&nbsp;<span id="eto"></span></td>
                </tr>
             </table>
         </div>
-        
+        <div class="row"></div>
         <div class="row">
             <h3>Emergency Contact Details</h3>
-            <div class="ctcvr">
-                <div class="mobcvr">
-                    <i style="float:left;" class="mdi-communication-call"></i>
-                    +91<span>9561542499</span>
-                </div>
-                <div class="mobcvr">
-                    <i style="float:left;" class="mdi-communication-call"></i>
-                    <span>121</span>
-                </div>
+            <div id="phonelist_cvr" class="ctcvr">
+                            
             </div>
         </div>
     </div>
-        
+    <script>
+            var garbagearr=JSON.parse(localStorage.getItem("garbagearr"));
+                
+            for(var i=0;i<garbagearr.length;i++)
+            {
+                var opt=document.createElement("option");
+                opt.text=garbagearr[i][4];
+                opt.value=i;
+                    
+                document.getElementById("garlocid").appendChild(opt);
+            }
+    </script> 
 </body>
 </html>

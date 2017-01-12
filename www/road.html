@@ -40,25 +40,7 @@
                 document.addEventListener("backbutton",onBack,false);
                 
                 document.getElementById("uid").textContent=sessionStorage.getItem("uname");
-                
-                var roadarr=JSON.parse(localStorage.getItem("roadarr"));
-
-                for(var i=0;i<roadarr.length;i++)
-                {
-                    var td=document.createElement("td");
-                    
-                    td.textContent=roadarr[i][0];
-                    var tr=document.createElement("tr");
-                    
-                    var input=document.createElement("input");
-                    input.type="hidden";
-                    input.value=i;
-                    
-                    tr.appendChild(input);
-                    tr.appendChild(td);
-                    
-                    document.getElementById("roadlist").appendChild(tr);
-                }
+                                
             }
 
             function onBack()
@@ -139,6 +121,8 @@
         {
             text-align: center;
             color: #fff;
+            margin: 0 auto;
+            width: 90%;
             
         }
         .mid_cvr h3
@@ -172,6 +156,10 @@
             height: 280px;
         }
         
+        #map
+        {
+            width: 100%;
+        }
         table tr th
         {
             background-color: #000;
@@ -255,14 +243,13 @@
                <tbody id="roadlist">
                </tbody>
             </table>
-        </div>
-        <div class="row">
-            <h3>Road Map</h3>
-            <div class="adrcvr">
-                <iframe id="mapid" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAzc8BNhDsZKzv_eEviwTNQS0oUyBHBEn4&q=Wagholi+Pune,MH" allowfullscreen></iframe>
-            </div>
-        </div>
+        </div>        
         
+    </div>
+    <div id="map" class="row">
+        <div class="adrcvr">
+            <iframe id="mapid" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAzc8BNhDsZKzv_eEviwTNQS0oUyBHBEn4&q=Wagholi+Pune,MH" allowfullscreen></iframe>
+        </div>
     </div>
     
     <div id="road_modal" class="modal fade in" tabindex="-1" aria-hidden="true">
@@ -299,6 +286,27 @@
             </div>
         </div>
     </div>
-    
+    <script>
+        
+                var roadarr=JSON.parse(localStorage.getItem("roadarr"));
+
+                for(var i=0;i<roadarr.length;i++)
+                {
+                    var td=document.createElement("td");
+                    
+                    td.textContent=roadarr[i][0];
+                    var tr=document.createElement("tr");
+                    
+                    var input=document.createElement("input");
+                    input.type="hidden";
+                    input.value=i;
+                    
+                    tr.appendChild(input);
+                    tr.appendChild(td);
+                    
+                    document.getElementById("roadlist").appendChild(tr);
+                }
+        
+    </script>
 </body>
 </html>

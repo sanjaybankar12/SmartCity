@@ -85,8 +85,7 @@
             
             $(".mobcvr").click(function()
             {
-                
-                
+                                
                 var number=$(this).children('span').text();
                 
                 navigator.notification.confirm("Do you want to call on "+number+"?",function(buttonIndex){
@@ -120,6 +119,8 @@
         {
             text-align: center;
             color: #fff;
+            margin: 0 auto;
+            width: 90%;
             
         }
         .mid_cvr h3
@@ -266,7 +267,7 @@
         document.getElementById("eto").textContent=waterarr[3];
         document.getElementById("paddr").textContent=waterarr[4];
         
-        var phonelist= document.getElementById("eto").textContent=waterarr[5];
+        var phonelist=waterarr[5];
         var phonearr=phonelist.split(',');
         
         for(var i=0;i<phonearr.length;i++)

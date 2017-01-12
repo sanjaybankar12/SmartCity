@@ -187,8 +187,15 @@
                                     {
                                         var waterarr=response.waterarr;
                                         var roadarr=response.roadarr;
+                                        var garbagearr=response.garbagearr;
+                                        var phasearr=response.phasearr;
+                                        var electrarr=response.electrarr;
+                                        var elearr=response.elearr;
                                         localStorage.setItem("waterarr",JSON.stringify(waterarr));
-                                        localStorage.setItem("roadarr",JSON.stringify(roadarr));
+                                        localStorage.setItem("roadarr",JSON.stringify(roadarr));                        localStorage.setItem("garbagearr",JSON.stringify(garbagearr));
+                                        localStorage.setItem("phasearr",JSON.stringify(phasearr));
+                                        localStorage.setItem("electrarr",JSON.stringify(electrarr));
+                                        localStorage.setItem("elearr",JSON.stringify(elearr));
                                         window.location.href="home.html";
                                     }
                                     else if(userarr[0]==1)
