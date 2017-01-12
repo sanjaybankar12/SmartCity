@@ -124,7 +124,33 @@
                 
                 var wardlist=$("#wardlist").val();
                 var centerlist=$("#centerlist").val();
-                                
+                
+                var wardliststr="";
+                $.each(wardlist,function(idx)
+                {
+                    if(idx==0)
+                    {
+                        wardliststr=wardlist[idx];
+                    }
+                    else
+                    {
+                        wardliststr=wardliststr+","+wardlist[idx];
+                    }
+                });
+                              
+                var centerliststr="";
+                $.each(centerlist,function(idx)
+                {
+                    if(idx==0)
+                    {
+                        centerliststr=centerlist[idx];
+                    }
+                    else
+                    {
+                        centerliststr=wardliststr+","+centerlist[idx];
+                    }
+                });
+                
                 $("#res").text('');
                                 
                 if(isstatus && isphonelist && wardlist!=null && centerlist!=null)
@@ -136,7 +162,7 @@
                         
                         $.ajax({
                             type:"POST",                            url:"http://www.sanjaybankar.co.in/ieeeprojects/smartcity/addelectricdetails.php",
-                            data:{"centerlist":centerlist,"wardlist":wardlist,"status":status,"phonelist":phonelist},
+                            data:{"centerlist":centerliststr,"wardlist":wardliststr,"status":status,"phonelist":phonelist},
                             dataType:"json",
                             success:function(response,testStatus,jqXHR)
                             {
@@ -215,6 +241,16 @@
                 window.location.href="home.html";
             });
             
+            $("#logout").click(function()
+            {
+                navigator.notification.confirm("Do you want to logout?",function(buttonIndex)
+                {
+                    if(buttonIndex==1)
+                    {
+                       window.location.href="login.html";
+                    }
+                },"Confirm",["Yes","No"]);
+            });
           
         });
     </script>
@@ -327,6 +363,13 @@
             <li id="newsfeed">
                 <i style="float:left;" class="mdi-editor-format-list-bulleted small"></i>
                 <a href="news.html">News Feed</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="logout">
+                <i style="float:left;" class="mdi-action-info-outline small"></i>
+                <a href="#!">Logout</a>
             </li>
         </ul>         
         

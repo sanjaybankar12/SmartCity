@@ -135,6 +135,17 @@
                 
             });
             
+            $("#logout").click(function()
+            {
+                navigator.notification.confirm("Do you want to logout?",function(buttonIndex)
+                {
+                    if(buttonIndex==1)
+                    {
+                       window.location.href="login.html";
+                    }
+                },"Confirm",["Yes","No"]);
+            });
+            
         });
     </script>
     <style>
@@ -266,12 +277,20 @@
                 <i style="float:left;" class="mdi-editor-format-list-bulleted small"></i>
                 <a href="news.html">News Feed</a>
             </li>
+             <li>
+                <div class="divider"></div>
+            </li>
+            <li id="logout">
+                <i style="float:left;" class="mdi-action-info-outline small"></i>
+                <a href="#!">Logout</a>
+            </li>
         </ul>       
     </div>
     
     <div class="mid_cvr">
+        <h3>Garbage Details</h3>
+        <div class="row"></div>
         <div class="row">
-            <h3>Garbage Collection Location</h3>
             <div class="input-field col s12 adrcvr">
                 <i style="float:left;" class="mdi-maps-place prefix"></i>
                 <select id="garlocid"></select>
@@ -279,21 +298,34 @@
             </div>
         </div>
         <div class="row">
-            <h3>Garbage Collection Timing</h3>
            <table class="centered highlight bordered striped">
-                <tr>
-                    <td>Morning</td>
-                    <td><span id="mfrom"></span>&nbsp;-&nbsp;<span id="mto"></span></td>
-               </tr>
-               <tr>
+               <thead>
+                    <tr style="color:#fff;" class="green">
+                        <th colspan="2" style="text-align:center;">Emergency Contacts</th>
+                   </tr>
+               </thead>
+               <tbody>
+                    <tr>
+                        <td>Morning</td>
+                        <td><span id="mfrom"></span>&nbsp;-&nbsp;<span id="mto"></span></td>
+                   </tr>
+                   <tr>
                     <td>Evening</td>
                     <td><span id="efrom"></span>&nbsp;-&nbsp;<span id="eto"></span></td>
-               </tr>
-            </table>
+                   </tr>
+               </tbody>
+            </table>  
+         
         </div>
         <div class="row"></div>
         <div class="row">
-            <h3>Emergency Contact Details</h3>
+            <table class="centered highlight bordered striped">
+               <thead>
+                    <tr style="color:#fff;" class="green">
+                        <th style="text-align:center;">Emergency Contacts</th>
+                   </tr>
+               </thead>
+            </table>  
             <div id="phonelist_cvr" class="ctcvr">
                             
             </div>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<!--
+  * Please see the included README.md file for license terms and conditions.
+  -->
+<head>
+    <title>Blank Cordova Mobile App Project Template (Lite)</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+
+    <!-- see http://webdesign.tutsplus.com/tutorials/htmlcss-tutorials/quick-tip-dont-forget-the-viewport-meta-tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <style>
+        /* following two viewport lines are equivalent to the meta viewport statement above, needed for Windows */
+        /* see http://www.quirksmode.org/blog/archives/2014/05/html5_dev_conf.html and http://dev.w3.org/csswg/css-device-adapt/ */
+        @-ms-viewport { width: 100vw ; zoom: 100% ; }  @viewport { width: 100vw ; zoom: 100% ; }
+        @-ms-viewport { user-zoom: fixed ; }           @viewport { user-zoom: fixed ; }
+    </style>
+    <link href="css/icons.css" rel="stylesheet">
+     <link rel="stylesheet" href="css/materilize.css"/> <!-- materilize css lib file -->
+     <link rel="stylesheet" href="css/style.css"/> <!-- customecss lib file -->
+    <script src="cordova.js"></script>          <!-- phantom library, needed for Cordova api calls, added during build -->
+    <script src="js/app.js"></script>           <!-- recommended location of your JavaScript code relative to other JS files -->
+      <script src="js/jquery-2.1.1.js"></script>  
+    <script src="js/materilize.js"></script>           <!-- materilize design lib file -->
+    <script src="xdk/init-dev.js"></script>     <!-- normalizes device and document ready events, see README for details -->
+    <script src="js/db.js"></script>
+    <script>
+        $(document).ready(function()
+        {
+            document.addEventListener("deviceready",onReady,false);
+            $(".button-collapse").sideNav();            
+            
+            function onReady()
+            {                
+                navigator.splashscreen.hide();
+                init_client();
+                document.addEventListener("backbutton",onBack,false);
+                
+                document.getElementById("uid").textContent=sessionStorage.getItem("uname");                                
+            }
+
+            function onBack()
+            {
+                 var cat=sessionStorage.getItem("cat")+".html";
+                 window.location.href="menu.html";
+                //navigator.notification.confirm("Do you want to exit app?",onExit);
+            }
+            
+            function onExit(buttonIndex)
+            {
+                if(buttonIndex===1)
+                {
+                    navigator.app.exitApp();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            
+            $("#nvroad").click(function()
+            {
+                sessionStorage.setItem("cat","road");  
+                window.location.href="menu.html";
+            });
+            
+            $("#nvwater").click(function()
+            {
+                sessionStorage.setItem("cat","water");  
+                window.location.href="menu.html";
+            });
+            
+            $("#nvelectricity").click(function()
+            {
+                sessionStorage.setItem("cat","electricity");  
+                window.location.href="menu.html";
+            });
+            
+            $("#nvgarbage").click(function()
+            {
+                sessionStorage.setItem("cat","garbage");  
+                window.location.href="menu.html";
+            });
+            
+            $("#logout").click(function()
+            {
+                navigator.notification.confirm("Do you want to logout?",function(buttonIndex)
+                {
+                    if(buttonIndex==1)
+                    {
+                       window.location.href="login.html";
+                    }
+                },"Confirm",["Yes","No"]);
+            });
+            
+        });
+    </script>
+    <style>
+        #header .nav-wrapper
+        {
+            background-color: royalblue;
+        }
+        #slide-out li a
+        {
+            font-weight: bold;
+            font-size: 16px;
+        }
+         .mid_cvr
+        {
+            color: #fff;
+            margin: 0 auto;
+            width: 90%;
+            
+        }
+        .mid_cvr h3
+        {
+            font-size: 20px;
+            text-align: center;
+        }
+        
+        #news
+        {   
+            margin: 50% auto;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    
+    </style>
+</head>
+
+<body>
+      <div class="hm_cvr">
+        <div id="header">
+            <div class="navbar-fixed red">
+                <nav>
+                  <div class="nav-wrapper">
+                    <a href="#" data-activates="slide-out" class="button-collapse white-text nav-btn">
+                        <i class="mdi-navigation-menu"></i>
+                      </a>
+                    <h2 class="head-title">Smart City&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+                  </div>
+                </nav>
+          </div>
+        </div>
+         <ul id="slide-out" class="side-nav">
+            <li style="background-color:red; ">
+                <a style="font-size:20px; color:#fff" href="home.html">Smart City</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li>
+                <span><i style="float:left;" class="mdi-social-person-outline small"></i></span>
+                <a id="uid" href="#!"></a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvroad">
+                <i style="float:left;" class="mdi-navigation-fullscreen-exit small"></i>
+                <a href="#!">Road</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvwater">
+                <i style="float:left;" class="mdi-editor-format-color-fill small"></i>
+                <a href="#!">Water</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvelectricity">
+                <i style="float:left;" class="mdi-image-wb-incandescent small"></i>
+                <a href="#!">Electricity</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="nvgarbage">
+                <i style="float:left;" class="mdi-action-shopping-cart small"></i>
+                <a href="#!">Garbage</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="newsfeed">
+                <i style="float:left;" class="mdi-editor-format-list-bulleted small"></i>
+                <a href="news.html">News Feed</a>
+            </li>
+             <li>
+                <div class="divider"></div>
+            </li>
+            <li id="logout">
+                <i style="float:left;" class="mdi-action-info-outline small"></i>
+                <a href="#!">Logout</a>
+            </li>
+        </ul>       
+    </div>
+    
+    <div class="mid_cvr">
+        <h3>News Feed</h3>
+        <marquee id="news">Submitted Complaint proccess soon, Our Admin section is in progress...</marquee>
+      
+    </div>
+    
+</body>
+</html>

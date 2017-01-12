@@ -37,6 +37,7 @@
                 document.addEventListener("backbutton",onBack,false);
                 
                 document.getElementById("uid").textContent=sessionStorage.getItem("uname");
+                                
             }
 
             function onBack()
@@ -103,6 +104,46 @@
                 
             });
             
+            
+            $("#paytab thead").on("click","tr",function()
+            {
+                $("#paytab").children("tbody").slideToggle('slow');
+                
+                return false;
+            });
+            
+            $("#phasetab thead").on("click","tr",function()
+            {
+                $("#phasetab").children("tbody").slideToggle('slow');
+                
+                return false;
+            });
+            
+            $("#notetab thead").on("click","tr",function()
+            {
+                $("#notetab").children("tbody").slideToggle('slow');
+                
+                return false;
+            });
+            
+            $("#cttab thead").on("click","tr",function()
+            {
+                $("#ctlist").slideToggle('slow');
+                
+                return false;
+            });
+            
+            $("#logout").click(function()
+            {
+                navigator.notification.confirm("Do you want to logout?",function(buttonIndex)
+                {
+                    if(buttonIndex==1)
+                    {
+                       window.location.href="login.html";
+                    }
+                },"Confirm",["Yes","No"]);
+            });
+            
         });
     </script>
     <style>
@@ -138,6 +179,8 @@
             width: 96%;
             text-align: center;
             margin: 0 auto;
+            border-radius: 5px;
+        
         }
         
         .adrcvr
@@ -166,6 +209,22 @@
             background-color:cornflowerblue;
             padding: 10px;
         }
+        
+        .mobcvr i
+        {
+            float: left;
+        }
+        #note
+        {
+            overflow-x: scroll;
+        }
+        
+        .scroll
+        {
+            height:120px;
+            overflow-y:scroll;
+        }
+              
         
     </style>
 </head>
@@ -230,59 +289,140 @@
                 <i style="float:left;" class="mdi-editor-format-list-bulleted small"></i>
                 <a href="news.html">News Feed</a>
             </li>
+             <li>
+                <div class="divider"></div>
+            </li>
+            <li id="logout">
+                <i style="float:left;" class="mdi-action-info-outline small"></i>
+                <a href="#!">Logout</a>
+            </li>
         </ul>           
     </div>
         
      <div class="mid_cvr">
+            <h3>Electricity Details</h3>
         <div class="row">
-            <h3>Electricity Phases</h3>
-           <table class="centered highlight bordered striped">
+           <table id="phasetab" class="centered highlight bordered striped">
                <thead>
-                    <tr style="background-color:#000;">
+                    <tr class="green" style="color:#fff;">
                         <th style="text-align:center;">Wards</th>
                         <th style="text-align:center;">Phases</th>
                    </tr>
                </thead>
-                <tbody>
-                    <tr>
-                        <td>Keshanand Phata</td>
-                        <td>3</td>
-                   </tr>
+                <tbody class="scroll" id="wardsinfoid">
+                    
                </tbody>
             </table>
         </div>
-         <div class="row">
-            <h3>Notifications</h3>
-            <div class="adrcvr">
-               <span>Active Properly</span>
-            </div>
+        
+        <div class="row">
+             <table id="paytab" class="centered highlight bordered striped">
+               <thead>
+                    <tr style="color:#fff;" class="green">
+                        <th style="text-align:center;">Payment Centers</th>
+                   </tr>
+               </thead>
+                <tbody class="scroll" id="payctrinfoid">
+                    
+               </tbody>
+            </table>
+        </div>
+          <div class="row">
+            <table id="notetab" class="centered highlight bordered striped">
+               <thead>
+                    <tr style="color:#fff;" class="green">
+                        <th style="text-align:center;">Notifications</th>
+                   </tr>
+               </thead>
+                <tbody>
+                    <tr>
+                        <td id="note"></td>
+                    </tr>
+               </tbody>
+            </table>            
         </div>
         <div class="row">
-            <h3>Electricity Payment Centers</h3>
-            <div class="adrcvr">
-                <ul>
-                    <li>Chandannagar</li>
-                    <li>
-                        <div class="divider"></div>
-                    </li>
-                    <li>Pune</li>
-                </ul>
-            </div>
-        </div>
-        <div class="row">
-            <h3>Emergency Contact Details</h3>
-            <div class="ctcvr">
-                <div class="mobcvr">
-                    <i style="float:left;" class="mdi-communication-call"></i>
-                    +91<span>9561542499</span>
-                </div>
-                <div class="mobcvr">
-                    <i style="float:left;" class="mdi-communication-call"></i>
-                    <span>121</span>
-                </div>
+            <table id="cttab" class="centered highlight bordered striped">
+               <thead>
+                    <tr style="color:#fff;" class="green">
+                        <th style="text-align:center;">Emergency Contacts</th>
+                   </tr>
+               </thead>
+                
+            </table>
+            <div id="ctlist" class="ctcvr scroll">
+              
             </div>
         </div>
     </div>
+    <script>
+        var phasearr=JSON.parse(localStorage.getItem("phasearr"));
+        var electrarr=JSON.parse(localStorage.getItem("electrarr"));
+        var elearr=JSON.parse(localStorage.getItem("elearr"));
         
+        
+        var wards=elearr[0].split(',');
+        var payctrs=elearr[1].split(',');
+        
+        document.getElementById("note").textContent=elearr[2];
+        
+        for(var i=0;i<wards.length;i++)
+        {
+            var tr=document.createElement("tr");
+            var td1=document.createElement("td");
+            var td2=document.createElement("td");
+            
+            for(var j=0;j<phasearr.length;j++)
+            {
+                if(phasearr[j][0]==wards[i])
+                {
+                    td1.textContent=phasearr[j][1];
+                    td2.textContent=phasearr[j][2];
+                }
+            }
+                                
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+            
+            document.getElementById("wardsinfoid").appendChild(tr);
+        }
+        
+        for(var i=0;i<payctrs.length;i++)
+        {
+            var tr=document.createElement("tr");
+            var td=document.createElement("td");
+            
+            for(var j=0;j<electrarr.length;j++)
+            {
+                if(electrarr[j][0]==payctrs[i])
+                {
+                    td.textContent=electrarr[j][1];
+                }
+            }
+                                
+            tr.appendChild(td);
+            
+            document.getElementById("payctrinfoid").appendChild(tr);
+        }
+        
+        var contlist=elearr[3].split(',');
+        
+        for(var i=0;i<contlist.length;i++)
+        {
+            var div=document.createElement("div");
+            div.className="mobcvr";
+            
+            var itag=document.createElement("i");
+            itag.className="mdi-communication-call";
+            var span=document.createElement("span");
+            span.textContent=contlist[i];
+            
+            div.appendChild(itag);
+            div.appendChild(span);
+            
+            document.getElementById("ctlist").appendChild(div);
+        }
+        
+    </script>
 </body>
 </html>

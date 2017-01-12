@@ -261,7 +261,16 @@
                 window.location.href="addgarbage.html";
             });
             
-            
+            $("#logout").click(function()
+            {
+                navigator.notification.confirm("Do you want to logout?",function(buttonIndex)
+                {
+                    if(buttonIndex==1)
+                    {
+                       window.location.href="login.html";
+                    }
+                },"Confirm",["Yes","No"]);
+            });
             
         });
     </script>
@@ -365,6 +374,13 @@
             <li id="newsfeed">
                 <i style="float:left;" class="mdi-editor-format-list-bulleted small"></i>
                 <a href="news.html">News Feed</a>
+            </li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li id="logout">
+                <i style="float:left;" class="mdi-action-info-outline small"></i>
+                <a href="#!">Logout</a>
             </li>
         </ul>         
         
